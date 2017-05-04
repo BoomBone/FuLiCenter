@@ -12,7 +12,7 @@ import cn.ucai.fulicenter.data.utils.OkHttpUtils;
 
 public class GoodsModel implements IGoodsModel {
     @Override
-    public void loadNewGoodsData(Context context, int catId, int pageId, int pageSize, OkHttpUtils.OnCompleteListener<NewGoodsBean[]> listener) {
+    public void loadNewGoodsData(Context context, int catId, int pageId, int pageSize, OnCompleteListener<NewGoodsBean[]> listener) {
         OkHttpUtils<NewGoodsBean[]> utils = new OkHttpUtils<>(context);
         utils.setRequestUrl(I.REQUEST_FIND_NEW_BOUTIQUE_GOODS)
                 .addParam(I.NewAndBoutiqueGoods.CAT_ID,String.valueOf(catId))
