@@ -23,6 +23,7 @@ import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.IGoodsModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.utils.ConvertUtils;
+import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.adapter.GoodsAdapter;
 
@@ -64,7 +65,13 @@ public class NewGoodsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initView();
 
+        setListener();
+        loadData(pageId,ACTION_LOAD_DATA);
+    }
+
+    private void initView() {
         model = new GoodsModel();
         gm = new GridLayoutManager(getContext(), I.COLUM_NUM);
         rvGoods.setLayoutManager(gm);
@@ -72,8 +79,13 @@ public class NewGoodsFragment extends Fragment {
         adapter = new GoodsAdapter(newGoodList,getContext());
         rvGoods.setAdapter(adapter);
 
-        setListener();
-        loadData(pageId,ACTION_LOAD_DATA);
+        srf.setColorSchemeColors(
+                getResources().getColor(R.color.google_blue),
+                getResources().getColor(R.color.google_green),
+                getResources().getColor(R.color.google_red),
+                getResources().getColor(R.color.google_yellow)
+        );
+
     }
 
     private void setListener() {
@@ -118,15 +130,17 @@ public class NewGoodsFragment extends Fragment {
             public void onSuccess(NewGoodsBean[] result) {
 
                 if(result!=null){
-                    ArrayList<NewGoodsBean> list = ConvertUtils.array2List(result);
+
                     //updateUI(list);
                     adapter.setMore(result!=null&&result.length>0);
                     if(!adapter.isMore()){
                         if(action==ACTION_PULL_UP){
-                            tvNomore.setVisibility(View.VISIBLE);
+                            adapter.setFooterText(getResources().getString(R.string.no_more));
                         }
                         return;
                     }
+                    ArrayList<NewGoodsBean> list = ResultUtils.array2List(result);
+                    adapter.setFooterText(getResources().getString(R.string.load_more));
                     switch (action){
                         case ACTION_LOAD_DATA:
                             adapter.initNewGoods(list);
@@ -138,6 +152,7 @@ public class NewGoodsFragment extends Fragment {
                             break;
                         case ACTION_PULL_UP:
                             adapter.addNewGoods(list);
+                            L.e("main","result:"+result);
                             break;
                     }
                 }
