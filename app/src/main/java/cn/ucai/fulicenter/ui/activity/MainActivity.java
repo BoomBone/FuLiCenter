@@ -9,6 +9,7 @@ import cn.ucai.fulicenter.data.bean.NewGoodsBean;
 import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.utils.L;
+import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,9 +17,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showFragment();
     }
+
+    private void showFragment() {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new NewGoodsFragment())
+                .commit();
+
+    }
+
     public void onCheckedChange(View view){
-        testDownloadNewGoods();
+        //testDownloadNewGoods();
     }
     public void testDownloadNewGoods(){
         GoodsModel model = new GoodsModel();
