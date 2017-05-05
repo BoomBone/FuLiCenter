@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.I;
@@ -110,7 +111,7 @@ public class NewGoodsFragment extends Fragment {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastPosition = gm.findLastVisibleItemPosition();
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastPosition == adapter.getItemCount() - 1 && adapter.isMore()) {
+                if (adapter!=null&&newState == RecyclerView.SCROLL_STATE_IDLE && lastPosition == adapter.getItemCount() - 1 && adapter.isMore()) {
                     pageId++;
                     loadData(pageId, ACTION_PULL_UP);
                 }
@@ -136,7 +137,21 @@ public class NewGoodsFragment extends Fragment {
         if (adapter != null) {
             unbinder.unbind();
         }
-
+    }
+    //刷新可见，不刷新看不到
+    void setLayoutVisibily(boolean visibily) {
+        srf.setRefreshing(visibily);
+        tvRefresh.setVisibility(visibily?View.VISIBLE:View.GONE);
+    }
+    //刷新页面能看见，加载页面就看不见
+    void setListVisibility(boolean visibility){
+        srf.setVisibility(visibility ? View.VISIBLE : View.GONE);
+        tvNomore.setVisibility(visibility?View.GONE:View.VISIBLE);
+    }
+    @OnClick(R.id.tv_nomore)
+    public void reload(){
+        pd.show();
+        loadData(pageId,ACTION_LOAD_DATA);
     }
 
     public void loadData(int pageId, final int action) {
@@ -144,6 +159,8 @@ public class NewGoodsFragment extends Fragment {
             @Override
             public void onSuccess(NewGoodsBean[] result) {
                 pd.dismiss();
+                setLayoutVisibily(false);
+                setListVisibility(true);
                 if (result != null) {
                     //updateUI(list);
                     adapter.setMore(result != null && result.length > 0);
@@ -160,14 +177,18 @@ public class NewGoodsFragment extends Fragment {
                             adapter.initNewGoods(list);
                             break;
                         case ACTION_PULL_DOWN:
-                            srf.setRefreshing(false);
-                            tvRefresh.setVisibility(View.GONE);
+                           /* srf.setRefreshing(false);
+                            tvRefresh.setVisibility(View.GONE);*/
                             adapter.initNewGoods(list);
                             break;
                         case ACTION_PULL_UP:
                             adapter.addNewGoods(list);
                             L.e("main", "result:" + result);
                             break;
+                    }
+                }else{
+                    if(adapter==null||adapter.getItemCount()==1){
+                       setListVisibility(false);
                     }
                 }
 
@@ -176,6 +197,7 @@ public class NewGoodsFragment extends Fragment {
             @Override
             public void onError(String error) {
                 pd.dismiss();
+                setLayoutVisibily(false);
 
             }
         });

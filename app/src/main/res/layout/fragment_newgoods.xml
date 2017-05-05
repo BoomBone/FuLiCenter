@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -8,6 +8,7 @@
         android:id="@+id/srf"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:background="@color/list_background">
 
         <LinearLayout
@@ -30,8 +31,9 @@
     <TextView
         android:id="@+id/tv_nomore"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/load_more"
+        android:layout_centerInParent="true"
+        android:text="@string/no_more"
          />
-</LinearLayout><!--android:visibility="gone"-->
+</RelativeLayout><!--android:visibility="gone"-->
