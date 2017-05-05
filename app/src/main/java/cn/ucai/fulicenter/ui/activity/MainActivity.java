@@ -60,7 +60,12 @@ public class MainActivity extends AppCompatActivity {
     private void setFragment() {
         if (index != currentInndex) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment_container, mFragments[index]);
+            ft.hide(mFragments[currentInndex]);
+            if(!mFragments[index].isAdded()){
+                ft.add(R.id.fragment_container,mFragments[index]);
+            }
+            //ft.replace(R.id.fragment_container, mFragments[index]);
+            ft.show(mFragments[index]);
             ft.commit();
             currentInndex = index;
         }
