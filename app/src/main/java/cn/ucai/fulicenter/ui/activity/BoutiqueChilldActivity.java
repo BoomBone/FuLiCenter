@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.I;
@@ -36,12 +37,17 @@ public class BoutiqueChilldActivity extends AppCompatActivity {
         setContentView(R.layout.activity_boutique_child);
         bind = ButterKnife.bind(this);
         int catId = getIntent().getIntExtra(I.NewAndBoutiqueGoods.CAT_ID, I.CAT_ID);
+        String title = getIntent().getStringExtra(I.Boutique.TITLE);
+        tvCommonTitle.setText(title);
         L.e("main","cat_id"+catId);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.fragment_container, new NewGoodsFragment(catId));
         ft.commit();
     }
-
+    @OnClick(R.id.backClickArea)
+    public void onBackClickArea(){
+        finish();
+    }
 
     @Override
     protected void onDestroy() {
