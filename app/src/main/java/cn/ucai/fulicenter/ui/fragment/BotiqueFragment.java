@@ -8,19 +8,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.BoutiqueBean;
 import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.IGoodsModel;
@@ -28,7 +29,6 @@ import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.adapter.BoutiqueAdapter;
-import cn.ucai.fulicenter.ui.adapter.GoodsAdapter;
 import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
 
 /**
@@ -50,7 +50,6 @@ public class BotiqueFragment extends Fragment {
     IGoodsModel model;
     LinearLayoutManager llm;
     BoutiqueAdapter adapter;
-    ArrayList<BoutiqueBean> boutiqueList;
 
     ProgressDialog pd;
 
@@ -59,6 +58,7 @@ public class BotiqueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newgoods, null);
         unbinder = ButterKnife.bind(this, view);
+
         return view;
     }
 
@@ -68,8 +68,8 @@ public class BotiqueFragment extends Fragment {
         model = new GoodsModel();
         initDialog();
         initView();
-        setListener();
         loadData();
+        setListener();
     }
 
     private void setListener() {
@@ -93,9 +93,6 @@ public class BotiqueFragment extends Fragment {
         llm = new LinearLayoutManager(getContext());
         rvGoods.setLayoutManager(llm);
 
-        boutiqueList = new ArrayList<>();
-
-        //rvGoods.setAdapter(adapter);
         rvGoods.addItemDecoration(new SpaceItemDecoration(12));
         //设置页脚数据的居中
 
@@ -111,10 +108,10 @@ public class BotiqueFragment extends Fragment {
         model.loadBoutiqueData(getContext(), new OnCompleteListener<BoutiqueBean[]>() {
             @Override
             public void onSuccess(BoutiqueBean[] result) {
+                L.e(TAG,"resule="+ Arrays.toString(result));
                 pd.dismiss();
                 setLayoutVisibily(false);
                 setListVisibility(true);
-                L.e(TAG,"resule="+result);
                 if (result != null) {
                     ArrayList<BoutiqueBean> list = ResultUtils.array2List(result);
                     updataUI(list);
@@ -136,7 +133,7 @@ public class BotiqueFragment extends Fragment {
 
     private void updataUI(ArrayList<BoutiqueBean> list) {
         if(adapter==null){
-            adapter = new BoutiqueAdapter(getContext(), boutiqueList);
+            adapter = new BoutiqueAdapter(getContext(), list);
             rvGoods.setAdapter(adapter);
         }else{
             adapter.initData(list);
