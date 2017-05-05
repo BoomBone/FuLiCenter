@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.data.net;
 
 import android.content.Context;
 
+import cn.ucai.fulicenter.data.bean.BoutiqueBean;
 import cn.ucai.fulicenter.data.bean.NewGoodsBean;
 import cn.ucai.fulicenter.data.utils.OkHttpUtils;
 
@@ -12,4 +13,6 @@ import cn.ucai.fulicenter.data.utils.OkHttpUtils;
 public interface IGoodsModel {
     void loadNewGoodsData(Context context, int catId , int pageId , int pageSize ,
                           OnCompleteListener<NewGoodsBean[]> listener);
+
+    void loadBoutiqueData(Context context, OkHttpUtils.OnCompleteListener<BoutiqueBean[]> listener);
 }
