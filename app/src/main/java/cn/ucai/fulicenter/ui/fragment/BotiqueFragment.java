@@ -105,6 +105,7 @@ public class BotiqueFragment extends Fragment {
     }
 
     private void loadData() {
+
         model.loadBoutiqueData(getContext(), new OnCompleteListener<BoutiqueBean[]>() {
             @Override
             public void onSuccess(BoutiqueBean[] result) {

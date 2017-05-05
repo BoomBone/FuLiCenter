@@ -50,7 +50,14 @@ public class NewGoodsFragment extends Fragment {
     GoodsAdapter adapter;
     GridLayoutManager gm;
     ArrayList<NewGoodsBean> newGoodList;
+    int catId;
+    public NewGoodsFragment() {
 
+    }
+
+    public NewGoodsFragment(int catId) {
+        this.catId = catId;
+    }
     //LinearLayoutManager lm;
 
     private static final int ACTION_LOAD_DATA = 0;
@@ -167,7 +174,7 @@ public class NewGoodsFragment extends Fragment {
     }
 
     public void loadData(int pageId, final int action) {
-        model.loadNewGoodsData(getContext(), 0, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
+        model.loadNewGoodsData(getContext(), catId, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
             @Override
             public void onSuccess(NewGoodsBean[] result) {
                 pd.dismiss();
