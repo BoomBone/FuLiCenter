@@ -22,7 +22,6 @@ import cn.ucai.fulicenter.data.bean.NewGoodsBean;
 import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.IGoodsModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
-import cn.ucai.fulicenter.data.utils.ConvertUtils;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.adapter.GoodsAdapter;
@@ -47,6 +46,8 @@ public class NewGoodsFragment extends Fragment {
     GoodsAdapter adapter;
     GridLayoutManager gm;
     ArrayList<NewGoodsBean> newGoodList;
+
+    //LinearLayoutManager lm;
 
     private static final int ACTION_LOAD_DATA=0;
     private static final int ACTION_PULL_DOWN=1;
@@ -78,6 +79,9 @@ public class NewGoodsFragment extends Fragment {
         newGoodList = new ArrayList<>();
         adapter = new GoodsAdapter(newGoodList,getContext());
         rvGoods.setAdapter(adapter);
+
+
+
 
         srf.setColorSchemeColors(
                 getResources().getColor(R.color.google_blue),
@@ -122,7 +126,10 @@ public class NewGoodsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        if(adapter!=null){
+            unbinder.unbind();
+        }
+
     }
     public void loadData(int pageId, final int action){
         model.loadNewGoodsData(getContext(), 0, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
@@ -130,7 +137,6 @@ public class NewGoodsFragment extends Fragment {
             public void onSuccess(NewGoodsBean[] result) {
 
                 if(result!=null){
-
                     //updateUI(list);
                     adapter.setMore(result!=null&&result.length>0);
                     if(!adapter.isMore()){
@@ -140,7 +146,7 @@ public class NewGoodsFragment extends Fragment {
                         return;
                     }
                     ArrayList<NewGoodsBean> list = ResultUtils.array2List(result);
-                    adapter.setFooterText(getResources().getString(R.string.load_more));
+                   adapter.setFooterText(getResources().getString(R.string.load_more));
                     switch (action){
                         case ACTION_LOAD_DATA:
                             adapter.initNewGoods(list);
