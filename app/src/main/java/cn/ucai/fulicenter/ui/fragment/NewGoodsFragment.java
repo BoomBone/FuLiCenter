@@ -189,8 +189,6 @@ public class NewGoodsFragment extends Fragment {
                             adapter.initNewGoods(list);
                             break;
                         case ACTION_PULL_DOWN:
-                           /* srf.setRefreshing(false);
-                            tvRefresh.setVisibility(View.GONE);*/
                             adapter.initNewGoods(list);
                             break;
                         case ACTION_PULL_UP:

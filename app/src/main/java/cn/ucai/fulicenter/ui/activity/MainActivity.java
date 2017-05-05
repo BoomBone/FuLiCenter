@@ -46,25 +46,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onCheckedChange(View view) {
-       switch (view.getId()){
-           case R.id.layout_new_good:
-               index = 0;
-               break;
-           case R.id.layout_boutique:
-               index = 1;
-               break;
-       }
-       setFragment();
+        switch (view.getId()) {
+            case R.id.layout_new_good:
+                index = 0;
+                break;
+            case R.id.layout_boutique:
+                index = 1;
+                break;
+        }
+        setFragment();
     }
 
     private void setFragment() {
-        if(index!=currentInndex){
+        if (index != currentInndex) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.fragment_container, mFragments[index]);
             ft.commit();
-            currentInndex=index;
+            currentInndex = index;
         }
     }
-
 
 }
