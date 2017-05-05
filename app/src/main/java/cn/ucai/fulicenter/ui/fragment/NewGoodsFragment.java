@@ -28,6 +28,7 @@ import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.adapter.GoodsAdapter;
+import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
 
 /**
  * Created by Administrator on 2017/5/4.
@@ -89,6 +90,7 @@ public class NewGoodsFragment extends Fragment {
         newGoodList = new ArrayList<>();
         adapter = new GoodsAdapter(newGoodList, getContext());
         rvGoods.setAdapter(adapter);
+        rvGoods.addItemDecoration(new SpaceItemDecoration(12));
         //设置页脚数据的居中
         gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
