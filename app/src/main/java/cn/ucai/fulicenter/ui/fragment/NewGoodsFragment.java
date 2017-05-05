@@ -89,6 +89,16 @@ public class NewGoodsFragment extends Fragment {
         newGoodList = new ArrayList<>();
         adapter = new GoodsAdapter(newGoodList, getContext());
         rvGoods.setAdapter(adapter);
+        //设置页脚数据的居中
+        gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if(adapter==null||position==adapter.getItemCount()-1){
+                    return I.COLUM_NUM;
+                }
+                return 1;
+            }
+        });
 
 
         srf.setColorSchemeColors(
