@@ -1,6 +1,8 @@
 package cn.ucai.fulicenter.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -49,10 +51,11 @@ public class NewGoodsFragment extends Fragment {
 
     //LinearLayoutManager lm;
 
-    private static final int ACTION_LOAD_DATA=0;
-    private static final int ACTION_PULL_DOWN=1;
-    private static final int ACTION_PULL_UP=2;
-    int pageId=1;
+    private static final int ACTION_LOAD_DATA = 0;
+    private static final int ACTION_PULL_DOWN = 1;
+    private static final int ACTION_PULL_UP = 2;
+    int pageId = 1;
+    ProgressDialog pd;
 
 
     @Nullable
@@ -66,10 +69,16 @@ public class NewGoodsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initDialog();
         initView();
-
         setListener();
-        loadData(pageId,ACTION_LOAD_DATA);
+        loadData(pageId, ACTION_LOAD_DATA);
+    }
+
+    private void initDialog() {
+        pd = new ProgressDialog(getContext());
+        pd.setMessage(getString(R.string.load_more));
+        pd.show();
     }
 
     private void initView() {
@@ -77,10 +86,8 @@ public class NewGoodsFragment extends Fragment {
         gm = new GridLayoutManager(getContext(), I.COLUM_NUM);
         rvGoods.setLayoutManager(gm);
         newGoodList = new ArrayList<>();
-        adapter = new GoodsAdapter(newGoodList,getContext());
+        adapter = new GoodsAdapter(newGoodList, getContext());
         rvGoods.setAdapter(adapter);
-
-
 
 
         srf.setColorSchemeColors(
@@ -103,9 +110,9 @@ public class NewGoodsFragment extends Fragment {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastPosition = gm.findLastVisibleItemPosition();
-                if(newState==RecyclerView.SCROLL_STATE_IDLE&&lastPosition==adapter.getItemCount()-1&&adapter.isMore()){
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastPosition == adapter.getItemCount() - 1 && adapter.isMore()) {
                     pageId++;
-                    loadData(pageId,ACTION_PULL_UP);
+                    loadData(pageId, ACTION_PULL_UP);
                 }
             }
         });
@@ -117,8 +124,8 @@ public class NewGoodsFragment extends Fragment {
             public void onRefresh() {
                 srf.setRefreshing(true);
                 tvRefresh.setVisibility(View.VISIBLE);
-                pageId=1;
-                loadData(pageId,ACTION_PULL_DOWN);
+                pageId = 1;
+                loadData(pageId, ACTION_PULL_DOWN);
             }
         });
     }
@@ -126,28 +133,29 @@ public class NewGoodsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(adapter!=null){
+        if (adapter != null) {
             unbinder.unbind();
         }
 
     }
-    public void loadData(int pageId, final int action){
+
+    public void loadData(int pageId, final int action) {
         model.loadNewGoodsData(getContext(), 0, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
             @Override
             public void onSuccess(NewGoodsBean[] result) {
-
-                if(result!=null){
+                pd.dismiss();
+                if (result != null) {
                     //updateUI(list);
-                    adapter.setMore(result!=null&&result.length>0);
-                    if(!adapter.isMore()){
-                        if(action==ACTION_PULL_UP){
+                    adapter.setMore(result != null && result.length > 0);
+                    if (!adapter.isMore()) {
+                        if (action == ACTION_PULL_UP) {
                             adapter.setFooterText(getResources().getString(R.string.no_more));
                         }
                         return;
                     }
                     ArrayList<NewGoodsBean> list = ResultUtils.array2List(result);
-                   adapter.setFooterText(getResources().getString(R.string.load_more));
-                    switch (action){
+                    adapter.setFooterText(getResources().getString(R.string.load_more));
+                    switch (action) {
                         case ACTION_LOAD_DATA:
                             adapter.initNewGoods(list);
                             break;
@@ -158,7 +166,7 @@ public class NewGoodsFragment extends Fragment {
                             break;
                         case ACTION_PULL_UP:
                             adapter.addNewGoods(list);
-                            L.e("main","result:"+result);
+                            L.e("main", "result:" + result);
                             break;
                     }
                 }
@@ -167,6 +175,7 @@ public class NewGoodsFragment extends Fragment {
 
             @Override
             public void onError(String error) {
+                pd.dismiss();
 
             }
         });
