@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_goods_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/good_detail_bg">
+
+    <RelativeLayout
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/main_orange">
+
+        <include layout="@layout/common_head_title" />
+
+        <ImageView
+            android:id="@+id/iv_good_share"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:src="@drawable/selector_share_bg" />
+
+        <ImageView
+            android:id="@+id/iv_good_collect"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/iv_good_share"
+            android:padding="5dp"
+            android:src="@mipmap/bg_collect_in" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/iv_good_collect">
+
+            <ImageView
+                android:id="@+id/iv_good_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:src="@mipmap/bg_cart_selected"/>
+            <TextView
+                android:id="@+id/tv_cart_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#f00"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_title"
+        android:padding="25dp"
+        android:background="@color/good_detail_bg_white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvGoodNameEnglish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center_vertical"
+            android:text="English"
+            android:textColor="#000"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvGoodName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:text="商品名称"
+                android:textColor="#000"
+                android:textSize="15sp" />
+            <TextView
+                android:id="@+id/tv_good_price_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="购买价格"
+                android:layout_margin="5dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@color/good_detail_currency_price" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tvGoodPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:text="原价"
+            android:textColor="#000"
+            android:textSize="15sp" />
+    </LinearLayout>
+    <cn.ucai.fulicenter.ui.view.SlideAutoLoopView
+        android:id="@+id/salv"
+        android:layout_below="@+id/layout_banner"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:background="@color/good_detail_bg_white" />
+    <cn.ucai.fulicenter.ui.view.FlowIndicator
+        android:layout_below="@+id/salv"
+        android:id="@+id/indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:count="4"
+        app:focus="0"
+        app:focus_color="@color/good_detaul_flow_indicator_focus"
+        app:normal_color="#ccc"
+        app:r="5dp"
+        app:space="3dp"
+        />
+    <WebView
+        android:id="@+id/wv_good_brief"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/indicator"
+        android:background="@color/good_detail_bg_white"
+        />
+
+
+</RelativeLayout>
