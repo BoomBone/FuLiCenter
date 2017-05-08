@@ -160,6 +160,8 @@ public class BotiqueFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
+        if(adapter!=null){
+            unbinder.unbind();
+        }
     }
 }

@@ -51,6 +51,7 @@ public class NewGoodsFragment extends Fragment {
     GridLayoutManager gm;
     ArrayList<NewGoodsBean> newGoodList;
     int catId;
+
     public NewGoodsFragment() {
 
     }
@@ -102,7 +103,7 @@ public class NewGoodsFragment extends Fragment {
         gm.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(adapter==null||position==adapter.getItemCount()-1){
+                if (adapter == null || position == adapter.getItemCount() - 1) {
                     return I.COLUM_NUM;
                 }
                 return 1;
@@ -130,7 +131,7 @@ public class NewGoodsFragment extends Fragment {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastPosition = gm.findLastVisibleItemPosition();
-                if (adapter!=null&&newState == RecyclerView.SCROLL_STATE_IDLE && lastPosition == adapter.getItemCount() - 1 && adapter.isMore()) {
+                if (adapter != null && newState == RecyclerView.SCROLL_STATE_IDLE && lastPosition == adapter.getItemCount() - 1 && adapter.isMore()) {
                     pageId++;
                     loadData(pageId, ACTION_PULL_UP);
                 }
@@ -157,20 +158,23 @@ public class NewGoodsFragment extends Fragment {
             unbinder.unbind();
         }
     }
+
     //刷新可见，不刷新看不到
     void setLayoutVisibily(boolean visibily) {
         srf.setRefreshing(visibily);
-        tvRefresh.setVisibility(visibily?View.VISIBLE:View.GONE);
+        tvRefresh.setVisibility(visibily ? View.VISIBLE : View.GONE);
     }
+
     //刷新页面能看见，加载页面就看不见
-    void setListVisibility(boolean visibility){
+    void setListVisibility(boolean visibility) {
         srf.setVisibility(visibility ? View.VISIBLE : View.GONE);
-        tvNomore.setVisibility(visibility?View.GONE:View.VISIBLE);
+        tvNomore.setVisibility(visibility ? View.GONE : View.VISIBLE);
     }
+
     @OnClick(R.id.tv_nomore)
-    public void reload(){
+    public void reload() {
         pd.show();
-        loadData(pageId,ACTION_LOAD_DATA);
+        loadData(pageId, ACTION_LOAD_DATA);
     }
 
     public void loadData(int pageId, final int action) {
@@ -180,8 +184,9 @@ public class NewGoodsFragment extends Fragment {
                 pd.dismiss();
                 setLayoutVisibily(false);
                 setListVisibility(true);
-                if (result != null) {
+                if (result != null && adapter != null) {
                     //updateUI(list);
+
                     adapter.setMore(result != null && result.length > 0);
                     if (!adapter.isMore()) {
                         if (action == ACTION_PULL_UP) {
@@ -189,6 +194,8 @@ public class NewGoodsFragment extends Fragment {
                         }
                         return;
                     }
+
+
                     ArrayList<NewGoodsBean> list = ResultUtils.array2List(result);
                     adapter.setFooterText(getResources().getString(R.string.load_more));
                     switch (action) {
@@ -202,10 +209,11 @@ public class NewGoodsFragment extends Fragment {
                             adapter.addNewGoods(list);
                             L.e("main", "result:" + result);
                             break;
+
                     }
-                }else{
-                    if(adapter==null||adapter.getItemCount()==1){
-                       setListVisibility(false);
+                } else {
+                    if (adapter == null || adapter.getItemCount() == 1) {
+                        setListVisibility(false);
                     }
                 }
 
@@ -215,6 +223,7 @@ public class NewGoodsFragment extends Fragment {
             public void onError(String error) {
                 pd.dismiss();
                 setLayoutVisibily(false);
+                //L.e("main","新品加载失败");
 
             }
         });

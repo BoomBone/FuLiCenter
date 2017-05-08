@@ -36,10 +36,13 @@ public class BoutiqueChilldActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boutique_child);
         bind = ButterKnife.bind(this);
+
         int catId = getIntent().getIntExtra(I.NewAndBoutiqueGoods.CAT_ID, I.CAT_ID);
         String title = getIntent().getStringExtra(I.Boutique.TITLE);
+
         tvCommonTitle.setText(title);
         L.e("main","cat_id"+catId);
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.fragment_container, new NewGoodsFragment(catId));
         ft.commit();
