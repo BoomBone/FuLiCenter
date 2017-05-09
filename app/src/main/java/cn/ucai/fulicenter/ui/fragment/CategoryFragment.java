@@ -82,8 +82,12 @@ public class CategoryFragment extends Fragment {
                 L.e(TAG, "loadCreategoryGroup_resule=" + Arrays.toString(result));
                 if (result != null) {
                     groupList = ResultUtils.array2List(result);
-                    for (CategoryGroupBean bean : groupList) {
-                        loadChildData(bean.getId());
+                    if(childList!=null){
+                        childList.clear();
+                    }
+                    for(int i=0;i<groupList.size();i++){
+                        childList.add(new ArrayList<CategoryChildBean>());
+                        loadChildData(groupList.get(i).getId(),i);
                     }
                 }
             }
@@ -91,11 +95,12 @@ public class CategoryFragment extends Fragment {
             @Override
             public void onError(String error) {
                 pd.dismiss();
+                setListVisibility(false);
             }
         });
     }
 
-    private void loadChildData(int parentId) {
+    private void loadChildData(int parentId, final int index) {
         model.loadCreategoryChild(getContext(), parentId, new OnCompleteListener<CategoryChildBean[]>() {
             @Override
             public void onSuccess(CategoryChildBean[] result) {
@@ -104,7 +109,8 @@ public class CategoryFragment extends Fragment {
 
                 if (result != null) {
                     ArrayList<CategoryChildBean> list = ResultUtils.array2List(result);
-                    childList.add(list);
+                    //childList.add(list);
+                    childList.set(index, list);
                 }
                 if (groupCount == groupList.size()) {
                     pd.dismiss();
@@ -118,7 +124,7 @@ public class CategoryFragment extends Fragment {
                 groupCount++;
                 if (groupCount == groupList.size()) {
                     pd.dismiss();
-                    setListVisibility(true);
+                    setListVisibility(false);
                 }
 
             }
