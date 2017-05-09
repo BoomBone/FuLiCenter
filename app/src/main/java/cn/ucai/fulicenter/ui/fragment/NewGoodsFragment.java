@@ -177,6 +177,12 @@ public class NewGoodsFragment extends Fragment {
         loadData(pageId, ACTION_LOAD_DATA);
     }
 
+    public void sortGoood(int sortGoods) {
+        if(adapter!=null){
+            adapter.sortGoods(sortGoods);
+        }
+    }
+
     public void loadData(int pageId, final int action) {
         model.loadNewGoodsData(getContext(), catId, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
             @Override

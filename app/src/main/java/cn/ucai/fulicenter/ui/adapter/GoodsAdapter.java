@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -126,7 +128,7 @@ public class GoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    static class FooterTextHolder extends RecyclerView.ViewHolder {
+    class FooterTextHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_footer)
         TextView tvFooter;
 
@@ -134,5 +136,35 @@ public class GoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public void sortGoods(final int sortby) {
+        Collections.sort(list, new Comparator<NewGoodsBean>() {
+            @Override
+            public int compare(NewGoodsBean left, NewGoodsBean right) {
+                int result = 0;
+                switch (sortby){
+                    case I.SORT_BY_PRICE_ASC:
+                        result = getPrice(left.getCurrencyPrice()) - getPrice(right.getCurrencyPrice());
+                        break;
+                    case I.SORT_BY_PRICE_DESC:
+                        result = getPrice(right.getCurrencyPrice()) - getPrice(left.getCurrencyPrice());
+                        break;
+                    case I.SORT_BY_ADDTIME_ASC:
+                        result= (int) (left.getAddTime()-right.getAddTime());
+                        break;
+                    case I.SORT_BY_ADDTIME_DESC:
+                        result= (int) (right.getAddTime()-left.getAddTime());
+                        break;
+                }
+                return result;
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+    private int getPrice(String currentPrice) {
+        String price = currentPrice.substring(currentPrice.indexOf("￥") + 1);
+        return Integer.parseInt(price);
     }
 }
