@@ -5,13 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <RelativeLayout
-        android:id="@+id/cat_fiter"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/orange"
 
         >
         <cn.ucai.fulicenter.ui.view.CatFiterCategoryButton
+            android:id="@+id/cat_fiter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="大类"
