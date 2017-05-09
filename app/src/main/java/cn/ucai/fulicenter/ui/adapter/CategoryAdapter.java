@@ -1,10 +1,12 @@
 package cn.ucai.fulicenter.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -12,9 +14,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CategoryChildBean;
 import cn.ucai.fulicenter.data.bean.CategoryGroupBean;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
+import cn.ucai.fulicenter.ui.activity.CategoryChildActivity;
 
 /**
  * Created by Administrator on 2017/5/8.
@@ -78,7 +82,6 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
             holder = (GroupViewHolder) convertView.getTag();
         }
         holder.bind(groupPosition, isExpanded);
-
         return convertView;
     }
 
@@ -122,20 +125,37 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
         }
     }
 
-     class ChildViewHolder {
+    class ChildViewHolder {
         @BindView(R.id.iv_child_thumb)
         ImageView ivChildThumb;
         @BindView(R.id.tv_child_name)
         TextView tvChildName;
+        @BindView(R.id.layout_child_category)
+        RelativeLayout mLayoutChildCategory;
+
 
         ChildViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
 
-         public void bind(int groupPosition, int childPosition) {
-             CategoryChildBean bean = getChild(groupPosition, childPosition);
-             ImageLoader.downloadImg(context, ivChildThumb, bean.getImageUrl());
-             tvChildName.setText(bean.getName());
-         }
-     }
+        public void bind(int groupPosition, int childPosition) {
+            final CategoryChildBean bean = getChild(groupPosition, childPosition);
+            if (bean != null) {
+                ImageLoader.downloadImg(context, ivChildThumb, bean.getImageUrl());
+                tvChildName.setText(bean.getName());
+                mLayoutChildCategory.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        context.startActivity(new Intent(context, CategoryChildActivity.class)
+                                .putExtra(I.CategoryChild.CAT_ID, bean.getId())
+
+                        );
+
+
+                    }
+                });
+            }
+        }
+    }
+
 }
