@@ -11,6 +11,20 @@
         android:background="@color/orange"
 
         >
+        <LinearLayout
+            android:id="@+id/backClickArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            >
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/back"
+                />
+        </LinearLayout>
         <cn.ucai.fulicenter.ui.view.CatFiterCategoryButton
             android:id="@+id/cat_fiter"
             android:layout_width="wrap_content"

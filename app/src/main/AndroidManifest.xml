@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity"></activity>
+        <activity android:name=".ui.activity.MainActivity" />
         <activity android:name=".ui.activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,9 @@
         </activity>
         <activity android:name=".ui.activity.BoutiqueChilldActivity" />
         <activity android:name=".ui.activity.GoodsDetailActivity" />
-        <activity android:name=".ui.activity.CategoryChildActivity"></activity>
+        <activity android:name=".ui.activity.CategoryChildActivity" />
+        <activity android:name=".ui.activity.LoginActivity" />
+        <activity android:name=".ui.activity.RegisterActivity"></activity>
     </application>
 
 </manifest>

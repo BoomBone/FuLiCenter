@@ -1,5 +1,6 @@
 package cn.ucai.fulicenter.ui.activity;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -64,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 index = 2;
                 break;
             case R.id.layout_person:
+                if(FuLiCenterApplication.getInstance().getCurrentUser()==null){
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }else{
+                    index = 4;
+                }
                 break;
         }
         setFragment();

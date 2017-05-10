@@ -8,6 +8,15 @@ import android.app.Application;
 
 public class FuLiCenterApplication extends Application {
     private static FuLiCenterApplication instance;
+    String CurrentUser;
+
+    public String getCurrentUser() {
+        return CurrentUser;
+    }
+
+    public void setCurrentUser(String currentUser) {
+        CurrentUser = currentUser;
+    }
 
     @Override
     public void onCreate() {
