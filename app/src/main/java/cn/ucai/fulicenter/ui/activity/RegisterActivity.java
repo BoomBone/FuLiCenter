@@ -20,6 +20,7 @@ import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
 import cn.ucai.fulicenter.data.utils.CommonUtils;
+import cn.ucai.fulicenter.data.utils.MD5;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 
 
@@ -60,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         initDialog();
         if (checkInput()) {
             model = new UserModel();
-            model.register(RegisterActivity.this, username, usernickname, password, new OnCompleteListener<String>() {
+            model.register(RegisterActivity.this, username, usernickname, MD5.getMessageDigest(password), new OnCompleteListener<String>() {
                 @Override
                 public void onSuccess(String s) {
                     if(s!=null){

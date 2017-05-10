@@ -2,19 +2,21 @@ package cn.ucai.fulicenter.application;
 
 import android.app.Application;
 
+import cn.ucai.fulicenter.data.bean.User;
+
 /**
  * Created by Administrator on 2017/5/3.
  */
 
 public class FuLiCenterApplication extends Application {
     private static FuLiCenterApplication instance;
-    String CurrentUser;
+    User CurrentUser;
 
-    public String getCurrentUser() {
+    public User getCurrentUser() {
         return CurrentUser;
     }
 
-    public void setCurrentUser(String currentUser) {
+    public void setCurrentUser(User currentUser) {
         CurrentUser = currentUser;
     }
 

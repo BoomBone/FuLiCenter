@@ -77,6 +77,8 @@
                 android:singleLine="true"
                 android:textColor="#000"
                 android:textSize="18sp"
+                android:inputType="textPassword"
+
                 />
         </RelativeLayout>
     </RelativeLayout>
