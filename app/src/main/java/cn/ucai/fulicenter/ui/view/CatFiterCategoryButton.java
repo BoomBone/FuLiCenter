@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.ucai.fulicenter.R;
@@ -76,21 +77,22 @@ public class CatFiterCategoryButton extends Button {
         isExpand = !isExpand;
     }
 
-    public void initView(String groupName, List<CategoryChildBean> list) {
+    public void initView(String groupName, ArrayList<CategoryChildBean> list) {
         if (groupName == null || list == null || list.size() == 0) {
             CommonUtils.showLongToast("数据获取异常，请重试！");
             return;
         }
         this.setText(groupName);
-        adapter = new CatFiterAdapter(context, list);
+        adapter = new CatFiterAdapter(context, list, groupName);
         gv = new GridView(context);
         gv.setNumColumns(GridView.AUTO_FIT);
         gv.setHorizontalSpacing(10);
         gv.setVerticalSpacing(10);
         gv.setAdapter(adapter);
     }
-    public void release(){
-        if(mPopupWindow!=null){
+
+    public void release() {
+        if (mPopupWindow != null) {
             mPopupWindow.dismiss();
         }
     }

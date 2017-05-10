@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -32,6 +33,8 @@ public class CategoryChildActivity extends AppCompatActivity {
     Button btnSortAddtime;
     @BindView(R.id.cat_fiter)
     CatFiterCategoryButton catFiter;
+    @BindView(R.id.backClickArea)
+    LinearLayout backClickArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +49,12 @@ public class CategoryChildActivity extends AppCompatActivity {
         String groupName = getIntent().getStringExtra(I.CategoryChild.NAME);
         ArrayList<CategoryChildBean> list = (ArrayList<CategoryChildBean>) getIntent().getSerializableExtra(I.CategoryChild.ID);
         catFiter.initView(groupName, list);
-        L.e(TAG,"groupName="+groupName);
-        L.e(TAG,"list="+list.toString());
+        L.e(TAG, "groupName=" + groupName);
+        L.e(TAG, "list=" + list.toString());
 
     }
 
-    @OnClick({R.id.btn_sort_price, R.id.btn_sort_addtime})
+    @OnClick({R.id.btn_sort_price, R.id.btn_sort_addtime,R.id.backClickArea})
     public void onViewClicked(View view) {
         Drawable end;
         L.e(TAG, "onViewClicked" + view.getId());
@@ -59,6 +62,7 @@ public class CategoryChildActivity extends AppCompatActivity {
             case R.id.btn_sort_price:
                 priceAsc = !priceAsc;
                 sortBy = priceAsc ? I.SORT_BY_PRICE_ASC : I.SORT_BY_PRICE_DESC;
+
                 end = getDrawable(priceAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
                 btnSortPrice.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, end, null);
                 break;
@@ -67,6 +71,9 @@ public class CategoryChildActivity extends AppCompatActivity {
                 sortBy = addTimeAsc ? I.SORT_BY_ADDTIME_ASC : I.SORT_BY_ADDTIME_DESC;
                 end = getDrawable(addTimeAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
                 btnSortAddtime.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, end, null);
+                break;
+            case R.id.backClickArea:
+                finish();
                 break;
         }
         fragment.sortGoood(sortBy);
@@ -78,8 +85,10 @@ public class CategoryChildActivity extends AppCompatActivity {
         if (unbinder != null) {
             unbinder.unbind();
         }
-        if(catFiter!=null){
+        if (catFiter != null) {
             catFiter.release();
         }
     }
+
+
 }

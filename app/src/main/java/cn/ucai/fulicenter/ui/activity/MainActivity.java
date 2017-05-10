@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.data.bean.NewGoodsBean;
 import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.layout_category:
                 index = 2;
+                break;
+            case R.id.layout_person:
                 break;
         }
         setFragment();

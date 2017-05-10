@@ -153,10 +153,9 @@ public class CategoryAdapter extends BaseExpandableListAdapter {
                                 .putExtra(I.CategoryChild.ID, childList.get(groupPosition))
 
                         );
-
-
                     }
                 });
+
             }
         }
     }

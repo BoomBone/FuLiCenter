@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.ui.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,27 +9,35 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CategoryChildBean;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
+import cn.ucai.fulicenter.data.utils.L;
+import cn.ucai.fulicenter.ui.activity.CategoryChildActivity;
 
 /**
  * Created by Administrator on 2017/5/9.
  */
 
 public class CatFiterAdapter extends BaseAdapter {
+    String TAG = "CatFiterAdapter";
     Context context;
-
-    public CatFiterAdapter(Context context, List<CategoryChildBean> list) {
+    ArrayList<CategoryChildBean> list;
+    String groupName;
+    public CatFiterAdapter(Context context, ArrayList<CategoryChildBean> list,String groupName) {
         this.context = context;
         this.list = list;
+        this.groupName = groupName;
+
     }
 
-    List<CategoryChildBean> list;
+
 
     @Override
     public int getCount() {
@@ -71,10 +80,26 @@ public class CatFiterAdapter extends BaseAdapter {
             ButterKnife.bind(this, view);
         }
 
-        public void bind(int position) {
-            CategoryChildBean bean = list.get(position);
+        public void bind(final int position) {
+            final CategoryChildBean bean = list.get(position);
+
             ImageLoader.downloadImg(context, ivCategoryChildThumb, bean.getImageUrl());
             tvCategoryChildName.setText(bean.getName());
+            layoutCategoryChild.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    L.e(TAG, "getId" + bean.getId());
+                    L.e(TAG, "getName" + bean.getName());
+                    L.e(TAG, "getId" + list.get(position));
+
+                    context.startActivity(new Intent(context,CategoryChildActivity.class)
+                            .putExtra(I.CategoryChild.CAT_ID, bean.getId())
+                            .putExtra(I.CategoryGroup.NAME, groupName)
+                            .putExtra(I.CategoryChild.ID, list)
+                    );
+                    ((CategoryChildActivity) context).finish();
+                }
+            });
         }
     }
 }
