@@ -3,6 +3,7 @@ package cn.ucai.fulicenter.ui.view;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -72,7 +73,7 @@ public class CatFiterCategoryButton extends Button {
 
     private void setArrow() {
         L.e("CatFiterCategoryButton", "setArrow" + isExpand);
-        Drawable end = context.getDrawable(!isExpand ? R.drawable.arrow2_down : R.drawable.arrow2_up);
+        Drawable end = ContextCompat.getDrawable(context,!isExpand ? R.drawable.arrow2_down : R.drawable.arrow2_up);
         setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, end, null);
         isExpand = !isExpand;
     }

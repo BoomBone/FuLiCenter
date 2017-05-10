@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -16,6 +17,7 @@ import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.Result;
 import cn.ucai.fulicenter.data.bean.User;
+import cn.ucai.fulicenter.data.local.UserDao;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
@@ -69,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                                 setmUserNameMsg(R.string.login_fail_error_password);
                             }else {
                                 User user = result.getRetData();
+                                Log.i("main", "LoginActivity.user:" + user);
                                 loginSuccess(user);
                             }
                         }
@@ -94,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
     private void loginSuccess(User user) {
         FuLiCenterApplication.getInstance().setCurrentUser(user);
         SharePrefrenceUtils.getInstance().setUserName(username);
+        UserDao dao = new UserDao(LoginActivity.this);
+        dao.saveUser(user);
         finish();
     }
 
