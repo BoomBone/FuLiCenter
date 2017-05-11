@@ -16,11 +16,13 @@ import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.fragment.BotiqueFragment;
 import cn.ucai.fulicenter.ui.fragment.CategoryFragment;
 import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
+import cn.ucai.fulicenter.ui.fragment.PersonalFragment;
 
 public class MainActivity extends AppCompatActivity {
     NewGoodsFragment mNewGoodsFragment;
     BotiqueFragment mBotiqueFragment;
     CategoryFragment mCategoryFragment;
+    PersonalFragment mPersonalFragment;
     Fragment[] mFragments;
     int currentIndex, index;
 
@@ -36,10 +38,12 @@ public class MainActivity extends AppCompatActivity {
         mNewGoodsFragment = new NewGoodsFragment();
         mBotiqueFragment = new BotiqueFragment();
         mCategoryFragment = new CategoryFragment();
+        mPersonalFragment = new PersonalFragment();
         mFragments = new Fragment[5];
         mFragments[0] = mNewGoodsFragment;
         mFragments[1] = mBotiqueFragment;
         mFragments[2] = mCategoryFragment;
+        mFragments[4] = mPersonalFragment;
     }
 
     private void showFragment() {
