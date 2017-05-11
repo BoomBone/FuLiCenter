@@ -13,12 +13,14 @@ import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
+import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.fragment.BotiqueFragment;
 import cn.ucai.fulicenter.ui.fragment.CategoryFragment;
 import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
 import cn.ucai.fulicenter.ui.fragment.PersonalFragment;
 
 public class MainActivity extends AppCompatActivity {
+    String TAG="MainActivity";
     NewGoodsFragment mNewGoodsFragment;
     BotiqueFragment mBotiqueFragment;
     CategoryFragment mCategoryFragment;
@@ -104,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFragment() {
+        L.e("setFragment....index="+index+",currentIndex="+currentIndex);
         if (index != currentIndex) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.hide(mFragments[currentIndex]);
@@ -112,8 +115,10 @@ public class MainActivity extends AppCompatActivity {
             }
             //ft.replace(R.id.fragment_container, mFragments[index]);
             ft.show(mFragments[index]);
-            ft.commit();
+            L.e("setFragment....ft="+ft);
+            ft.commitAllowingStateLoss();
             currentIndex = index;
+            L.e("setFragment....index="+index+",currentIndex="+currentIndex);
         }
         setRadioButton();
     }
@@ -129,6 +134,16 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK&&requestCode==I.REQUEST_CODE_LOGIN){
             index = 4;
+            setFragment();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        L.e(TAG,"onResume,index"+index);
+        if(index==4&&FuLiCenterApplication.getInstance().getCurrentUser()==null){
+            index = 0;
             setFragment();
         }
     }

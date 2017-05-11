@@ -30,7 +30,7 @@ public class DBManager {
             ContentValues values = new ContentValues();
             values.put(DBOpenHelper.USER_COLUMN_NAME,user.getMuserName());
             values.put(DBOpenHelper.USER_COLUMN_NICK, user.getMuserNick());
-            long insert = database.insert(DBOpenHelper.USER_TABALE_NAME, null, values);
+            long insert = database.replace(DBOpenHelper.USER_TABALE_NAME, null, values);
             L.e(TAG,"insert="+insert);
             return insert > 0 ? true : false;
         }
