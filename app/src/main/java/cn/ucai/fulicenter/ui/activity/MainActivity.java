@@ -1,18 +1,17 @@
 package cn.ucai.fulicenter.ui.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
+import android.widget.RadioButton;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
-import cn.ucai.fulicenter.data.bean.NewGoodsBean;
-import cn.ucai.fulicenter.data.net.GoodsModel;
-import cn.ucai.fulicenter.data.net.OnCompleteListener;
-import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.fragment.BotiqueFragment;
 import cn.ucai.fulicenter.ui.fragment.CategoryFragment;
 import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
@@ -24,14 +23,36 @@ public class MainActivity extends AppCompatActivity {
     CategoryFragment mCategoryFragment;
     PersonalFragment mPersonalFragment;
     Fragment[] mFragments;
+    RadioButton[] mRadioButton;
     int currentIndex, index;
+    @BindView(R.id.layout_new_good)
+    RadioButton mLayoutNewGood;
+    @BindView(R.id.layout_boutique)
+    RadioButton mLayoutBoutique;
+    @BindView(R.id.layout_category)
+    RadioButton mLayoutCategory;
+    @BindView(R.id.layout_cart)
+    RadioButton mLayoutCart;
+    @BindView(R.id.layout_person)
+    RadioButton mLayoutPerson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         initFragment();
+        initRadioButton();
         showFragment();
+    }
+
+    private void initRadioButton() {
+        mRadioButton = new RadioButton[5];
+        mRadioButton[0] = mLayoutNewGood;
+        mRadioButton[1] = mLayoutBoutique;
+        mRadioButton[2] = mLayoutCategory;
+        mRadioButton[3] = mLayoutCart;
+        mRadioButton[4] = mLayoutPerson;
     }
 
     private void initFragment() {
@@ -69,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
                 index = 2;
                 break;
             case R.id.layout_person:
-                if(FuLiCenterApplication.getInstance().getCurrentUser()==null){
+                if (FuLiCenterApplication.getInstance().getCurrentUser() == null) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                }else{
+                } else {
                     index = 4;
                 }
                 break;
@@ -83,13 +104,20 @@ public class MainActivity extends AppCompatActivity {
         if (index != currentIndex) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.hide(mFragments[currentIndex]);
-            if(!mFragments[index].isAdded()){
-                ft.add(R.id.fragment_container,mFragments[index]);
+            if (!mFragments[index].isAdded()) {
+                ft.add(R.id.fragment_container, mFragments[index]);
             }
             //ft.replace(R.id.fragment_container, mFragments[index]);
             ft.show(mFragments[index]);
             ft.commit();
             currentIndex = index;
+        }
+        setRadioButton();
+    }
+
+    private void setRadioButton() {
+        for(int i=0;i<mRadioButton.length;i++){
+            mRadioButton[i].setChecked(i==index?true:false);
         }
     }
 

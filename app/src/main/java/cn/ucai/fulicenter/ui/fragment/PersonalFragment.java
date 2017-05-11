@@ -50,6 +50,12 @@ public class PersonalFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         user = FuLiCenterApplication.getInstance().getCurrentUser();
         if (user != null) {
             mTvUserName.setText(user.getMuserNick());
@@ -68,6 +74,6 @@ public class PersonalFragment extends Fragment {
 
     @OnClick({R.id.center_top, R.id.center_user_info})
     public void onSetting(View view) {
-        startActivity(new Intent(getContext(),SettingActivity.class));
+        startActivity(new Intent(getContext(), SettingActivity.class));
     }
 }
