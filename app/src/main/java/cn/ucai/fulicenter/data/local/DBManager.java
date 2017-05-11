@@ -44,9 +44,14 @@ public class DBManager {
                     DBOpenHelper.USER_COLUMN_NAME + "=?", new String[]{username});
             L.e(TAG,"cursor="+cursor);
             if(cursor.moveToNext()){
-                String usernick = cursor.getString(cursor.getColumnIndex(DBOpenHelper.USER_COLUMN_NICK));
-                L.e(TAG, "usernick=" + usernick);
-                user.setMuserNick(usernick);
+                user = new User();
+                int id = cursor.getInt(cursor.getColumnIndex(sHelper.USER_COLUMN_NAME));
+                String nick = cursor.getString(cursor.getColumnIndex(sHelper.USER_COLUMN_NICK));
+                L.e(TAG, "usernick=" + nick);
+                user.setMuserNick(nick);
+                user.setMavatarId(id);
+                user.setMuserName(username);
+
             }
         }
         return user;

@@ -9,13 +9,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         >
-        <ImageView
-            android:id="@+id/backClickArea"
-            android:layout_width="40dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/back"
-            />
+            android:id="@+id/backClickArea"
+            >
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/back"
+                />
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/tv_common_title"
             android:layout_width="match_parent"

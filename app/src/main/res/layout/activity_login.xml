@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
             android:layout_marginRight="60dp"
-            android:background="@drawable/tb_btn_login_orange_normal"
+            android:background="@drawable/tb_regiser_bg"
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
             android:text="@string/register"
