@@ -14,4 +14,6 @@ public interface IUserModel {
                   OnCompleteListener<String> listener);
 
     void loginin(Context context, String username, String password, OnCompleteListener<String> listener);
+
+    void updateNick(Context context, String username, String nickname, OnCompleteListener<String> listener);
 }
