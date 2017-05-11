@@ -25,7 +25,8 @@
         <activity android:name=".ui.activity.GoodsDetailActivity" />
         <activity android:name=".ui.activity.CategoryChildActivity" />
         <activity android:name=".ui.activity.LoginActivity" />
-        <activity android:name=".ui.activity.RegisterActivity"></activity>
+        <activity android:name=".ui.activity.RegisterActivity" />
+        <activity android:name=".ui.activity.SettingActivity"></activity>
     </application>
 
 </manifest>

@@ -125,7 +125,7 @@
             android:paddingBottom="7dp"
             android:paddingTop="7dp"
             android:text="@string/register"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="20sp"
             />
 

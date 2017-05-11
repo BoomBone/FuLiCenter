@@ -3,13 +3,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <RelativeLayout
+        android:id="@+id/center_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/personal_center_top_bg"
+        >
         <TextView
             android:id="@+id/tv_center_setting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:text="设置"
+            android:textSize="18sp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/white"
             />
     </RelativeLayout>
     <ScrollView
@@ -25,25 +34,43 @@
                 android:layout_height="wrap_content"
                 android:background="@color/personal_center_top_bg"
                 >
-                <ImageView
-                    android:id="@+id/iv_user_avatar"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/contactlogo"/>
-                <TextView
-                    android:id="@+id/tv_user_name"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/center_user_info"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="你的用户名"
-                    android:layout_toRightOf="@id/iv_user_avatar"
-                    />
-                <ImageView
-                    android:id="@+id/iv_user_qrcode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/tv_user_name"
-                    android:src="@drawable/tb_icon_home_qrcode_normal"
-                    />
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    >
+                    <ImageView
+                        android:id="@+id/iv_user_avatar"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="8dp"
+                        android:src="@drawable/contactlogo"/>
+                    <TextView
+                        android:id="@+id/tv_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="你的用户名"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"
+                        android:layout_toRightOf="@id/iv_user_avatar"
+                        />
+                    <ImageView
+                        android:id="@+id/iv_user_qrcode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/tv_user_name"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@drawable/tb_icon_home_qrcode_normal"
+                        />
+                </RelativeLayout>
+
             </RelativeLayout>
 
         </LinearLayout>

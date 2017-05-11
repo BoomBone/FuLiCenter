@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.ui.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,11 +13,13 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.data.bean.User;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
+import cn.ucai.fulicenter.ui.activity.SettingActivity;
 
 
 /**
@@ -48,17 +51,23 @@ public class PersonalFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         user = FuLiCenterApplication.getInstance().getCurrentUser();
-        if(user!=null){
+        if (user != null) {
             mTvUserName.setText(user.getMuserNick());
-            ImageLoader.setAvatar(ImageLoader.getAvatarUrl(user),getContext(),mIvUserAvatar);
+            ImageLoader.setAvatar(ImageLoader.getAvatarUrl(user), getContext(), mIvUserAvatar);
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(unbinder!=null){
+        if (unbinder != null) {
             unbinder.unbind();
         }
+
+    }
+
+    @OnClick({R.id.center_top, R.id.center_user_info})
+    public void onSetting(View view) {
+        startActivity(new Intent(getContext(),SettingActivity.class));
     }
 }
