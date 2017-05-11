@@ -12,6 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
+import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.ui.fragment.BotiqueFragment;
 import cn.ucai.fulicenter.ui.fragment.CategoryFragment;
 import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
@@ -91,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.layout_person:
                 if (FuLiCenterApplication.getInstance().getCurrentUser() == null) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),
+                            I.REQUEST_CODE_LOGIN
+                            );
                 } else {
                     index = 4;
                 }
@@ -121,4 +124,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK&&requestCode==I.REQUEST_CODE_LOGIN){
+            index = 4;
+            setFragment();
+        }
+    }
 }
