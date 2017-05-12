@@ -2,7 +2,10 @@ package cn.ucai.fulicenter.data.net;
 
 import android.content.Context;
 
+import java.io.File;
+
 import cn.ucai.fulicenter.application.I;
+import cn.ucai.fulicenter.data.bean.MessageBean;
 import cn.ucai.fulicenter.data.bean.User;
 
 /**
@@ -16,4 +19,13 @@ public interface IUserModel {
     void loginin(Context context, String username, String password, OnCompleteListener<String> listener);
 
     void updateNick(Context context, String username, String nickname, OnCompleteListener<String> listener);
+
+    void uploadAvatar(Context context, String username, String avatarType, File file, OnCompleteListener<String> listener);
+
+    void loadCollectsCount(Context context, String username, OnCompleteListener<MessageBean> listener);
+
+    void addCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
+
+    void removeCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
+
 }

@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.ui.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +27,10 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,11 +38,16 @@ import butterknife.OnClick;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
+import cn.ucai.fulicenter.data.bean.Result;
 import cn.ucai.fulicenter.data.bean.User;
+import cn.ucai.fulicenter.data.local.UserDao;
 import cn.ucai.fulicenter.data.net.IUserModel;
+import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
+import cn.ucai.fulicenter.data.utils.CommonUtils;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
 import cn.ucai.fulicenter.data.utils.L;
+import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.data.utils.SharePrefrenceUtils;
 import cn.ucai.fulicenter.ui.view.CircleImageView;
 
@@ -74,6 +83,7 @@ public class SettingActivity extends AppCompatActivity {
     @BindView(R.id.nickname)
     TextView mTvnickname;
     IUserModel model;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,10 +141,25 @@ public class SettingActivity extends AppCompatActivity {
         }
     }*/
 
-    @OnClick(R.id.iv_user_avatar)
+    @OnClick(R.id.layout_user_avatar)
     public void onPhoto() {
         uploadHeadImage();
     }
+    private void initDialog(){
+        pd = new ProgressDialog(SettingActivity.this);
+        pd.setMessage(getString(R.string.update_user_avatar));
+        pd.show();
+    }
+    private void dismissDialog(){
+        if(pd!=null&&pd.isShowing()){
+            pd.dismiss();
+        }
+    }
+
+
+
+
+
     //--upload avatar start
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -148,17 +173,17 @@ public class SettingActivity extends AppCompatActivity {
         popupWindow.setOutsideTouchable(true);
         View parent = LayoutInflater.from(this).inflate(R.layout.activity_setting, null);
         popupWindow.showAtLocation(parent, Gravity.BOTTOM, 0, 0);
-        //popupWindow在弹窗的时候背景半透明
-        final WindowManager.LayoutParams params = getWindow().getAttributes();
-        params.alpha = 1f;
-        getWindow().setAttributes(params);
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                params.alpha = 1.0f;
-                getWindow().setAttributes(params);
-            }
-        });
+//        //popupWindow在弹窗的时候背景半透明
+//        final WindowManager.LayoutParams params = getWindow().getAttributes();
+//        params.alpha = 1f;
+//        getWindow().setAttributes(params);
+//        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+//            @Override
+//            public void onDismiss() {
+//                params.alpha = 1.0f;
+//                getWindow().setAttributes(params);
+//            }
+//        });
 
         btnCarema.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -278,6 +303,7 @@ public class SettingActivity extends AppCompatActivity {
                     if (uri == null) {
                         return;
                     }
+                    initDialog();
                     String cropImagePath = getRealFilePathFromUri(getApplicationContext(), uri);
                     Bitmap bitMap = BitmapFactory.decodeFile(cropImagePath);
                     mIvUserAvatar.setImageBitmap(bitMap);
@@ -289,10 +315,43 @@ public class SettingActivity extends AppCompatActivity {
                     }*/
                     //此处后面可以将bitMap转为二进制上传后台网络
                     //......
+                    File file = saveBitmapFile(bitMap);
+                    L.e(TAG,"file="+file.getAbsolutePath());
+                    uploadAvatar(file);
 
                 }
                 break;
         }
+    }
+
+    private void uploadAvatar(File file) {
+        User user = FuLiCenterApplication.getInstance().getCurrentUser();
+        model.uploadAvatar(SettingActivity.this, user.getMuserName(), null, file, new OnCompleteListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                if (s != null) {
+                    Result<User> result = ResultUtils.getResultFromJson(s, User.class);
+                    Log.i("main", "SettingActivity.result:" + result);
+                    if (result.getRetCode() == I.MSG_UPLOAD_AVATAR_FAIL) {
+                        CommonUtils.showLongToast(R.string.update_user_avatar_fail);
+                    } else {
+                        uploadSuccess(result.getRetData());
+                    }
+                }
+                dismissDialog();
+            }
+
+            @Override
+            public void onError(String error) {
+                dismissDialog();
+            }
+        });
+    }
+
+    private void uploadSuccess(User user) {
+        FuLiCenterApplication.getInstance().setCurrentUser(user);
+        UserDao dao = new UserDao(SettingActivity.this);
+        dao.saveUser(user);
     }
 
     /**
@@ -369,5 +428,46 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
     }
+    /**
+     * 返回头像保存在sd卡的位置:
+     * Android/data/cn.ucai.superwechat/files/pictures/user_avatar
+     * @param context
+     * @param path
+     * @return
+     */
+    public static String getAvatarPath(Context context, String path){
+        File dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File folder = new File(dir,path);
+        if(!folder.exists()){
+            folder.mkdir();
+        }
+        return folder.getAbsolutePath();
+    }
+
+    private File saveBitmapFile(Bitmap bitmap) {
+        if (bitmap != null) {
+            String imagePath = getAvatarPath(SettingActivity.this,I.AVATAR_TYPE)+"/"+getAvatarName()+".jpg";
+            File file = new File(imagePath);//将要保存图片的路径
+            L.e("file path="+file.getAbsolutePath());
+            try {
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                bos.flush();
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return file;
+        }
+        return null;
+    }
+
+    String avatarName;
+    private String getAvatarName() {
+        avatarName = "" + System.currentTimeMillis();
+        return avatarName;
+    }
+
 //--upload avatar end
+
 }
