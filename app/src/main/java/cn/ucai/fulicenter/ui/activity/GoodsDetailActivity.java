@@ -1,5 +1,6 @@
 package cn.ucai.fulicenter.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -14,13 +15,18 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.AlbumsBean;
 import cn.ucai.fulicenter.data.bean.GoodsDetailsBean;
+import cn.ucai.fulicenter.data.bean.MessageBean;
 import cn.ucai.fulicenter.data.bean.PropertiesBean;
+import cn.ucai.fulicenter.data.bean.User;
 import cn.ucai.fulicenter.data.net.GoodsModel;
 import cn.ucai.fulicenter.data.net.IGoodsModel;
+import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
+import cn.ucai.fulicenter.data.net.UserModel;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.view.FlowIndicator;
 import cn.ucai.fulicenter.ui.view.SlideAutoLoopView;
@@ -30,7 +36,7 @@ import cn.ucai.fulicenter.ui.view.SlideAutoLoopView;
  */
 
 public class GoodsDetailActivity extends AppCompatActivity {
-    IGoodsModel model;
+
     String TAG = "GoodsDetailActivity";
     int goodsId;
     Unbinder unbinder;
@@ -60,6 +66,10 @@ public class GoodsDetailActivity extends AppCompatActivity {
     RelativeLayout activityGoodsDetail;
     @BindView(R.id.tv_good_price_shop)
     TextView tvGoodPriceShop;
+    User user;
+    IGoodsModel model;
+    IUserModel iUserModel;
+    boolean isCollect = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,12 +86,14 @@ public class GoodsDetailActivity extends AppCompatActivity {
             finish();
         } else {
             model = new GoodsModel();
+            iUserModel = new UserModel();
             loadData();
         }
 
     }
 
     private void loadData() {
+        user = FuLiCenterApplication.getInstance().getCurrentUser();
         model.loadGoodsDetailData(GoodsDetailActivity.this, goodsId, new OnCompleteListener<GoodsDetailsBean>() {
             @Override
             public void onSuccess(GoodsDetailsBean result) {
@@ -96,6 +108,34 @@ public class GoodsDetailActivity extends AppCompatActivity {
 
             }
         });
+        //判断是否收藏
+        loadCollectStatus();
+
+    }
+
+    private void loadCollectStatus() {
+        user = FuLiCenterApplication.getInstance().getCurrentUser();
+        if (user != null) {
+            iUserModel.isCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(),
+                    new OnCompleteListener<MessageBean>() {
+                        @Override
+                        public void onSuccess(MessageBean result) {
+                            isCollect = result != null && result.isSuccess() ? true : false;
+                            updataCollectUI();
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            isCollect = false;
+                            updataCollectUI();
+                        }
+                    });
+
+        }
+    }
+
+    private void updataCollectUI() {
+        ivGoodCollect.setImageResource(isCollect ? R.mipmap.bg_collect_out : R.mipmap.bg_collect_in);
     }
 
     private void showData(GoodsDetailsBean bean) {
@@ -151,6 +191,48 @@ public class GoodsDetailActivity extends AppCompatActivity {
         if (salv != null) {
             salv.stopPlayLoop();
         }
+    }
 
+    @OnClick(R.id.iv_good_collect)
+    public void onCollectClick() {
+        if(user==null){
+            startActivityForResult(new Intent(GoodsDetailActivity.this, LoginActivity.class), 0);
+        }else {
+            if(isCollect){
+                iUserModel.removeCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), new OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        isCollect = !isCollect;
+                        updataCollectUI();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }else{
+                iUserModel.addCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), new OnCompleteListener<MessageBean>() {
+                    @Override
+                    public void onSuccess(MessageBean result) {
+                        isCollect = !isCollect;
+                        updataCollectUI();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==RESULT_OK){
+            loadCollectStatus();
+        }
     }
 }

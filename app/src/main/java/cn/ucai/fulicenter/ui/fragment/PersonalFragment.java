@@ -24,6 +24,7 @@ import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
+import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.activity.SettingActivity;
 
 
@@ -31,6 +32,7 @@ import cn.ucai.fulicenter.ui.activity.SettingActivity;
  * A simple {@link Fragment} subclass.
  */
 public class PersonalFragment extends Fragment {
+    String TAG = "PersonalFragment";
     User user;
     @BindView(R.id.iv_user_avatar)
     ImageView mIvUserAvatar;
@@ -76,12 +78,14 @@ public class PersonalFragment extends Fragment {
     }
 
     private void initCollectCount() {
+        L.e(TAG,"initCollectCount().start"+collectCount);
         model.loadCollectsCount(getContext(), user.getMuserName(),
                 new OnCompleteListener<MessageBean>() {
                     @Override
                     public void onSuccess(MessageBean result) {
                        if(result!=null&&result.isSuccess()){
                            collectCount = Integer.parseInt(result.getMsg());
+                           L.e(TAG,"initCollectCount().ing"+collectCount);
                        }else{
                            collectCount = 0;
                        }
