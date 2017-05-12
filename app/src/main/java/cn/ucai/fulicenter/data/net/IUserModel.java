@@ -27,5 +27,6 @@ public interface IUserModel {
     void addCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
 
     void removeCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
+    void isCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
 
 }
