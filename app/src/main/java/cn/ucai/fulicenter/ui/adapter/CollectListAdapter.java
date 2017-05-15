@@ -86,9 +86,9 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         holder.tvGoodsThumb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, GoodsDetailActivity.class)
-                        .putExtra(I.GoodsDetails.KEY_GOODS_ID, bean.getGoodsId())
-                );
+                //点击后会跳转到商品详情，把goodid传过去；
+                ((CollectListActivity)context).startActivityForResult(new Intent(context, GoodsDetailActivity.class)
+                        .putExtra(I.GoodsDetails.KEY_GOODS_ID,bean.getGoodsId()),I.REQUEST_CODE_GO_DETAIL);
             }
         });
         holder.ivDel.setOnClickListener(new View.OnClickListener() {

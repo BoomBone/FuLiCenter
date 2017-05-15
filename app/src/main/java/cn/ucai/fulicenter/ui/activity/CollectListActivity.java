@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -226,5 +227,19 @@ public class CollectListActivity extends AppCompatActivity {
     @OnClick(R.id.backClickArea)
     public void backClicked() {
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==I.REQUEST_CODE_GO_DETAIL&&resultCode==RESULT_OK){
+            int goodId = data.getIntExtra(I.Goods.KEY_GOODS_ID, 0);
+            boolean isCollect = data.getBooleanExtra(I.Goods.KEY_IS_COLLECT, true);
+            L.e(TAG,"goodId="+goodId+"  isCollect"+isCollect);
+            if(!isCollect){
+                newGoodList.remove(new CollectBean(goodId));
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }
