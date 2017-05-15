@@ -9,17 +9,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CollectBean;
-import cn.ucai.fulicenter.data.bean.NewGoodsBean;
+import cn.ucai.fulicenter.data.bean.MessageBean;
+import cn.ucai.fulicenter.data.net.IUserModel;
+import cn.ucai.fulicenter.data.net.OnCompleteListener;
+import cn.ucai.fulicenter.data.net.UserModel;
+import cn.ucai.fulicenter.data.utils.CommonUtils;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
+import cn.ucai.fulicenter.ui.activity.CollectListActivity;
 import cn.ucai.fulicenter.ui.activity.GoodsDetailActivity;
 
 /**
@@ -30,6 +34,8 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     List<CollectBean> list;
     Context context;
     String footerText;
+    IUserModel model;
+
 
     public String getFooterText() {
         return footerText;
@@ -54,20 +60,21 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public CollectListAdapter(List<CollectBean> list, Context context) {
         this.list = list;
         this.context = context;
+        model = new UserModel();
     }
 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == I.TYPE_FOOTER) {
-            return new CollectListAdapter.FooterTextHolder(View.inflate(context, R.layout.item_footer, null));
+            return new FooterTextHolder(View.inflate(context, R.layout.item_footer, null));
         }
-        return new CollectListAdapter.GoodsViewHolder(View.inflate(context, R.layout.item_collect_list, null));
+        return new GoodsViewHolder(View.inflate(context, R.layout.item_collect_list, null));
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder parentholder, int position) {
-        if(I.TYPE_FOOTER==getItemViewType(position)){
+    public void onBindViewHolder(RecyclerView.ViewHolder parentholder, final int position) {
+        if (I.TYPE_FOOTER == getItemViewType(position)) {
             FooterTextHolder holder = (FooterTextHolder) parentholder;
             holder.tvFooter.setText(footerText);
             return;
@@ -80,11 +87,38 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void onClick(View v) {
                 context.startActivity(new Intent(context, GoodsDetailActivity.class)
-                        .putExtra(I.GoodsDetails.KEY_GOODS_ID,bean.getGoodsId())
+                        .putExtra(I.GoodsDetails.KEY_GOODS_ID, bean.getGoodsId())
                 );
-
             }
         });
+        holder.ivDel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeCollect(position);
+            }
+        });
+
+
+    }
+
+    private void removeCollect(final int position) {
+        if(model!=null){
+          model.removeCollect(context, String.valueOf(list.get(position).getGoodsId())
+                  , FuLiCenterApplication.getInstance().getCurrentUser().getMuserName()
+                  , new OnCompleteListener<MessageBean>() {
+                      @Override
+                      public void onSuccess(MessageBean result) {
+                          CommonUtils.showLongToast(result.getMsg());
+                          list.remove(position);
+                          notifyDataSetChanged();
+                      }
+
+                      @Override
+                      public void onError(String error) {
+
+                      }
+                  });
+        }
     }
 
     @Override
@@ -111,12 +145,14 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         notifyDataSetChanged();
     }
 
+
     class GoodsViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tvGoodsThumb)
         ImageView tvGoodsThumb;
         @BindView(R.id.tvGoodsName)
         TextView tvGoodsName;
-
+        @BindView(R.id.iv_del)
+        ImageView ivDel;
 
         GoodsViewHolder(View view) {
             super(view);
@@ -133,4 +169,6 @@ public class CollectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ButterKnife.bind(this, view);
         }
     }
+
+
 }

@@ -20,6 +20,7 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CollectBean;
+import cn.ucai.fulicenter.data.bean.MessageBean;
 import cn.ucai.fulicenter.data.bean.User;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
@@ -34,6 +35,7 @@ import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
  */
 
 public class CollectListActivity extends AppCompatActivity {
+    private static final String TAG = "CollectListActivity";
     @BindView(R.id.tv_refresh)
     TextView tvRefresh;
     @BindView(R.id.rv_goods)
@@ -68,7 +70,9 @@ public class CollectListActivity extends AppCompatActivity {
         initView();
         setListener();
         loadData(pageId, ACTION_LOAD_DATA);
+
     }
+
 
     private void initDialog() {
         pd = new ProgressDialog(CollectListActivity.this);
