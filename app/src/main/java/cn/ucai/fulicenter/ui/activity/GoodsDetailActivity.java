@@ -27,6 +27,8 @@ import cn.ucai.fulicenter.data.net.IGoodsModel;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
+import cn.ucai.fulicenter.data.utils.CommonUtils;
+import cn.ucai.fulicenter.data.utils.ConvertUtils;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.view.FlowIndicator;
 import cn.ucai.fulicenter.ui.view.SlideAutoLoopView;
@@ -199,34 +201,26 @@ public class GoodsDetailActivity extends AppCompatActivity {
             startActivityForResult(new Intent(GoodsDetailActivity.this, LoginActivity.class), 0);
         }else {
             if(isCollect){
-                iUserModel.removeCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), new OnCompleteListener<MessageBean>() {
-                    @Override
-                    public void onSuccess(MessageBean result) {
-                        isCollect = !isCollect;
-                        updataCollectUI();
-                    }
-
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                });
+                iUserModel.removeCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), mListener);
             }else{
-                iUserModel.addCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), new OnCompleteListener<MessageBean>() {
-                    @Override
-                    public void onSuccess(MessageBean result) {
-                        isCollect = !isCollect;
-                        updataCollectUI();
-                    }
+                iUserModel.addCollect(GoodsDetailActivity.this, String.valueOf(goodsId), user.getMuserName(), mListener);
 
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                });
             }
         }
     }
+    OnCompleteListener<MessageBean> mListener=new OnCompleteListener<MessageBean>() {
+        @Override
+        public void onSuccess(MessageBean result) {
+            isCollect = !isCollect;
+            updataCollectUI();
+            CommonUtils.showLongToast(result.getMsg());
+        }
+
+        @Override
+        public void onError(String error) {
+            CommonUtils.showLongToast(error);
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
