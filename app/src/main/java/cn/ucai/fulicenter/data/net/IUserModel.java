@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.File;
 
 import cn.ucai.fulicenter.application.I;
+import cn.ucai.fulicenter.data.bean.CollectBean;
 import cn.ucai.fulicenter.data.bean.MessageBean;
 import cn.ucai.fulicenter.data.bean.User;
 
@@ -27,6 +28,8 @@ public interface IUserModel {
     void addCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
 
     void removeCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
+
     void isCollect(Context context, String goodsId, String username, OnCompleteListener<MessageBean> listener);
+    void loadCollect(Context context, String username,int pageId, int pageSize, OnCompleteListener<CollectBean[]> listener);
 
 }
