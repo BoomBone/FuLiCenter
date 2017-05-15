@@ -25,6 +25,7 @@ import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
 import cn.ucai.fulicenter.data.utils.ImageLoader;
 import cn.ucai.fulicenter.data.utils.L;
+import cn.ucai.fulicenter.ui.activity.CollectListActivity;
 import cn.ucai.fulicenter.ui.activity.SettingActivity;
 
 
@@ -78,18 +79,18 @@ public class PersonalFragment extends Fragment {
     }
 
     private void initCollectCount() {
-        L.e(TAG,"initCollectCount().start"+collectCount);
+        L.e(TAG, "initCollectCount().start" + collectCount);
         model.loadCollectsCount(getContext(), user.getMuserName(),
                 new OnCompleteListener<MessageBean>() {
                     @Override
                     public void onSuccess(MessageBean result) {
-                       if(result!=null&&result.isSuccess()){
-                           collectCount = Integer.parseInt(result.getMsg());
-                           L.e(TAG,"initCollectCount().ing"+collectCount);
-                       }else{
-                           collectCount = 0;
-                       }
-                       mTvCollectCount.setText(String.valueOf(collectCount));
+                        if (result != null && result.isSuccess()) {
+                            collectCount = Integer.parseInt(result.getMsg());
+                            L.e(TAG, "initCollectCount().ing" + collectCount);
+                        } else {
+                            collectCount = 0;
+                        }
+                        mTvCollectCount.setText(String.valueOf(collectCount));
                     }
 
                     @Override
@@ -113,5 +114,10 @@ public class PersonalFragment extends Fragment {
     @OnClick({R.id.center_top, R.id.center_user_info})
     public void onSetting(View view) {
         startActivity(new Intent(getContext(), SettingActivity.class));
+    }
+
+    @OnClick(R.id.layout_center_collect)
+    public void onCollectListClicked() {
+        startActivity(new Intent(getContext(),CollectListActivity.class));
     }
 }

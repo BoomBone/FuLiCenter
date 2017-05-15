@@ -1,16 +1,13 @@
-package cn.ucai.fulicenter.ui.fragment;
+package cn.ucai.fulicenter.ui.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,22 +17,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
-import cn.ucai.fulicenter.data.bean.NewGoodsBean;
-import cn.ucai.fulicenter.data.net.GoodsModel;
-import cn.ucai.fulicenter.data.net.IGoodsModel;
+import cn.ucai.fulicenter.data.bean.CollectBean;
+import cn.ucai.fulicenter.data.bean.User;
+import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
+import cn.ucai.fulicenter.data.net.UserModel;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
-import cn.ucai.fulicenter.ui.adapter.GoodsAdapter;
+import cn.ucai.fulicenter.ui.adapter.CollectListAdapter;
 import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
 
 /**
- * Created by Administrator on 2017/5/4.
+ * Created by Administrator on 2017/5/15.
  */
 
-public class NewGoodsFragment extends Fragment {
-
+public class CollectListActivity extends AppCompatActivity {
     @BindView(R.id.tv_refresh)
     TextView tvRefresh;
     @BindView(R.id.rv_goods)
@@ -44,43 +42,28 @@ public class NewGoodsFragment extends Fragment {
     SwipeRefreshLayout srf;
     @BindView(R.id.tv_nomore)
     TextView tvNomore;
+    int pageSize = I.PAGE_SIZE_DEFAULT;
     Unbinder unbinder;
 
-    IGoodsModel model;
-    GoodsAdapter adapter;
+    IUserModel model;
+    CollectListAdapter adapter;
     GridLayoutManager gm;
-    ArrayList<NewGoodsBean> newGoodList;
+    ArrayList<CollectBean> newGoodList;
     int catId;
     private static final int ACTION_LOAD_DATA = 0;
     private static final int ACTION_PULL_DOWN = 1;
     private static final int ACTION_PULL_UP = 2;
     int pageId = 1;
     ProgressDialog pd;
+    @BindView(R.id.tv_common_title)
+    TextView mTvCommonTitle;
 
-
-    public NewGoodsFragment() {
-
-    }
-
-    public NewGoodsFragment(int catId) {
-        this.catId = catId;
-    }
-    //LinearLayoutManager lm;
-
-
-
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_newgoods, null);
-        unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_collect_list);
+        unbinder = ButterKnife.bind(this);
         initDialog();
         initView();
         setListener();
@@ -88,17 +71,18 @@ public class NewGoodsFragment extends Fragment {
     }
 
     private void initDialog() {
-        pd = new ProgressDialog(getContext());
+        pd = new ProgressDialog(CollectListActivity.this);
         pd.setMessage(getString(R.string.load_more));
         pd.show();
     }
 
     private void initView() {
-        model = new GoodsModel();
-        gm = new GridLayoutManager(getContext(), I.COLUM_NUM);
+        mTvCommonTitle.setText(R.string.collect_title);
+        model = new UserModel();
+        gm = new GridLayoutManager(CollectListActivity.this, I.COLUM_NUM);
         rvGoods.setLayoutManager(gm);
         newGoodList = new ArrayList<>();
-        adapter = new GoodsAdapter(newGoodList, getContext());
+        adapter = new CollectListAdapter(newGoodList, CollectListActivity.this);
         rvGoods.setAdapter(adapter);
         rvGoods.addItemDecoration(new SpaceItemDecoration(12));
         //设置页脚数据的居中
@@ -154,12 +138,13 @@ public class NewGoodsFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    protected void onDestroy() {
+        super.onDestroy();
         if (adapter != null) {
             unbinder.unbind();
         }
     }
+
 
     //刷新可见，不刷新看不到
     void setLayoutVisibily(boolean visibily) {
@@ -179,16 +164,15 @@ public class NewGoodsFragment extends Fragment {
         loadData(pageId, ACTION_LOAD_DATA);
     }
 
-    public void sortGoood(int sortGoods) {
-        if(adapter!=null){
-            adapter.sortGoods(sortGoods);
-        }
-    }
-
     public void loadData(int pageId, final int action) {
-        model.loadNewGoodsData(getContext(), catId, pageId, 10, new OnCompleteListener<NewGoodsBean[]>() {
+        User user = FuLiCenterApplication.getInstance().getCurrentUser();
+        if (user == null) {
+            finish();
+            return;
+        }
+        model.loadCollect(CollectListActivity.this, user.getMuserName(), pageId, pageSize, new OnCompleteListener<CollectBean[]>() {
             @Override
-            public void onSuccess(NewGoodsBean[] result) {
+            public void onSuccess(CollectBean[] result) {
                 pd.dismiss();
                 setLayoutVisibily(false);
                 setListVisibility(true);
@@ -203,8 +187,7 @@ public class NewGoodsFragment extends Fragment {
                         return;
                     }
 
-
-                    ArrayList<NewGoodsBean> list = ResultUtils.array2List(result);
+                    ArrayList<CollectBean> list = ResultUtils.array2List(result);
                     adapter.setFooterText(getResources().getString(R.string.load_more));
                     switch (action) {
                         case ACTION_LOAD_DATA:
@@ -224,23 +207,20 @@ public class NewGoodsFragment extends Fragment {
                         setListVisibility(false);
                     }
                 }
-
             }
 
             @Override
             public void onError(String error) {
-                pd.dismiss();
-                setLayoutVisibily(false);
-                //L.e("main","新品加载失败");
-
+                if (adapter == null || adapter.getItemCount() == 1) {
+                    setListVisibility(false);
+                }
             }
         });
+
     }
 
-  /*  private void updateUI(ArrayList<NewGoodsBean> list) {
-        if(adapter==null){
-            adapter = new GoodsAdapter(list,getContext());
-            rvGoods.setAdapter(adapter);
-        }
-    }*/
+    @OnClick(R.id.backClickArea)
+    public void backClicked() {
+        finish();
+    }
 }
