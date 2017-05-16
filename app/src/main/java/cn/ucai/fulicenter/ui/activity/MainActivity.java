@@ -15,6 +15,7 @@ import cn.ucai.fulicenter.application.FuLiCenterApplication;
 import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.ui.fragment.BotiqueFragment;
+import cn.ucai.fulicenter.ui.fragment.CartFragment;
 import cn.ucai.fulicenter.ui.fragment.CategoryFragment;
 import cn.ucai.fulicenter.ui.fragment.NewGoodsFragment;
 import cn.ucai.fulicenter.ui.fragment.PersonalFragment;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     NewGoodsFragment mNewGoodsFragment;
     BotiqueFragment mBotiqueFragment;
     CategoryFragment mCategoryFragment;
+    CartFragment mCartFragment;
     PersonalFragment mPersonalFragment;
     Fragment[] mFragments;
     RadioButton[] mRadioButton;
@@ -63,10 +65,12 @@ public class MainActivity extends AppCompatActivity {
         mBotiqueFragment = new BotiqueFragment();
         mCategoryFragment = new CategoryFragment();
         mPersonalFragment = new PersonalFragment();
+        mCartFragment = new CartFragment();
         mFragments = new Fragment[5];
         mFragments[0] = mNewGoodsFragment;
         mFragments[1] = mBotiqueFragment;
         mFragments[2] = mCategoryFragment;
+        mFragments[3] = mCartFragment;
         mFragments[4] = mPersonalFragment;
     }
 
@@ -92,6 +96,16 @@ public class MainActivity extends AppCompatActivity {
             case R.id.layout_category:
                 index = 2;
                 break;
+            case R.id.layout_cart:
+                if (FuLiCenterApplication.getInstance().getCurrentUser() == null) {
+                    startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),
+                            I.REQUEST_CODE_LOGIN_FROM_CART
+                    );
+                } else {
+                    index = 3;
+                }
+                break;
+
             case R.id.layout_person:
                 if (FuLiCenterApplication.getInstance().getCurrentUser() == null) {
                     startActivityForResult(new Intent(MainActivity.this, LoginActivity.class),
@@ -132,8 +146,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK&&requestCode==I.REQUEST_CODE_LOGIN){
-            index = 4;
+        if(resultCode==RESULT_OK){
+            if(requestCode==I.REQUEST_CODE_LOGIN){
+                index = 4;
+            }
+            if(requestCode==I.REQUEST_CODE_LOGIN_FROM_CART){
+                index = 3;
+            }
             setFragment();
         }
     }
