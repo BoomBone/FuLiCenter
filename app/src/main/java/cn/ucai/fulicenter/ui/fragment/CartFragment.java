@@ -168,7 +168,7 @@ public class CartFragment extends Fragment {
         if (adapter == null) {
             adapter = new CartAdapter(getContext(), list);
             adapter.setCbkListener(cbkListener);
-            adapter.setAddCart(clickListener);
+            adapter.setClickListener(clickListener);
             rvGoods.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
@@ -241,10 +241,40 @@ public class CartFragment extends Fragment {
     View.OnClickListener clickListener=new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int) v.getTag();
-            updateCart(position,1);
+            switch (v.getId()){
+                case R.id.iv_cart_add:
+                    final int position = (int) v.getTag();
+                    updateCart(position,1);
+                    break;
+                case R.id.iv_cart_del:
+                    final int delPosition = (int) v.getTag();
+                    L.e(TAG,"View.OnClickListener.delPosition="+delPosition);
+                    CartBean bean = list.get(delPosition);
+                    if(bean.getCount()>1){
+                        updateCart(delPosition,-1);
+                    }else if(bean.getCount()==1){
+                        model.removeCart(getContext(), bean.getId(), new OnCompleteListener<MessageBean>() {
+                            @Override
+                            public void onSuccess(MessageBean result) {
+                                list.remove(delPosition);
+                                adapter.notifyDataSetChanged();
+                                sumPrice();
+                                if(list.size()==0){
+                                    setListVisibility(false, false);
+                                }
+                            }
+
+                            @Override
+                            public void onError(String error) {
+
+                            }
+                        });
+                    }
+                    break;
+            }
         }
     };
+
 
     private void updateCart(final int position, final int count) {
         final CartBean bean = list.get(position);

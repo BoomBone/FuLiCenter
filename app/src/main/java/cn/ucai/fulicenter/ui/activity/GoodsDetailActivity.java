@@ -72,7 +72,6 @@ public class GoodsDetailActivity extends AppCompatActivity {
     IGoodsModel model;
     IUserModel iUserModel;
     boolean isCollect = false;
-    boolean isCart = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
