@@ -11,6 +11,15 @@ import cn.ucai.fulicenter.data.bean.User;
 public class FuLiCenterApplication extends Application {
     private static FuLiCenterApplication instance;
     User CurrentUser;
+    private boolean isLogined = false;
+
+    public boolean isLogined() {
+        return isLogined;
+    }
+
+    public void setLogined(boolean logined) {
+        isLogined = logined;
+    }
 
     public User getCurrentUser() {
         return CurrentUser;
@@ -18,6 +27,7 @@ public class FuLiCenterApplication extends Application {
 
     public void setCurrentUser(User currentUser) {
         CurrentUser = currentUser;
+        setLogined(currentUser == null ? false : true);
     }
 
     @Override

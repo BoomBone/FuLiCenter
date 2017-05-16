@@ -72,6 +72,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     IGoodsModel model;
     IUserModel iUserModel;
     boolean isCollect = false;
+    boolean isCart = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,8 +113,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
         });
         //判断是否收藏
         loadCollectStatus();
-
     }
+
 
     private void loadCollectStatus() {
         user = FuLiCenterApplication.getInstance().getCurrentUser();
@@ -219,6 +220,33 @@ public class GoodsDetailActivity extends AppCompatActivity {
             }
         }
     }
+    @OnClick(R.id.iv_good_cart)
+    public void onAddCartClick(){
+        if(FuLiCenterApplication.getInstance().isLogined()){
+            addCart();
+        }else{
+            startActivityForResult(new Intent(GoodsDetailActivity.this, LoginActivity.class), 0);
+        }
+    }
+
+    private void addCart() {
+        iUserModel.addCart(GoodsDetailActivity.this, goodsId, user.getMuserName(), 1, true, new OnCompleteListener<MessageBean>() {
+            @Override
+            public void onSuccess(MessageBean result) {
+                if(result!=null&&result.isSuccess()){
+                    CommonUtils.showLongToast(R.string.add_goods_success);
+                }else{
+                    CommonUtils.showLongToast(R.string.add_goods_fail);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                CommonUtils.showLongToast(R.string.add_goods_fail);
+            }
+        });
+    }
+
     OnCompleteListener<MessageBean> mListener=new OnCompleteListener<MessageBean>() {
         @Override
         public void onSuccess(MessageBean result) {
