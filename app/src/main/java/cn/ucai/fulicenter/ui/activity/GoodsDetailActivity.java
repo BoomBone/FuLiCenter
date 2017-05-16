@@ -230,7 +230,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     }
 
     private void addCart() {
-        iUserModel.addCart(GoodsDetailActivity.this, goodsId, user.getMuserName(), 1, true, new OnCompleteListener<MessageBean>() {
+        iUserModel.addCart(GoodsDetailActivity.this, goodsId, user.getMuserName(), 1, false, new OnCompleteListener<MessageBean>() {
             @Override
             public void onSuccess(MessageBean result) {
                 if(result!=null&&result.isSuccess()){

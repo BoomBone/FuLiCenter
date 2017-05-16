@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,18 @@ import cn.ucai.fulicenter.ui.activity.MainActivity;
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
     Context context;
     List<CartBean> list;
+    CompoundButton.OnCheckedChangeListener cbkListener;
+    View.OnClickListener addCart;
+
+    public void setAddCart(View.OnClickListener addCart) {
+        this.addCart = addCart;
+    }
+
+    public void setCbkListener(CompoundButton.OnCheckedChangeListener cbkListener) {
+        this.cbkListener = cbkListener;
+    }
+
+
 
     public CartAdapter(Context context, List<CartBean> list) {
         this.context = context;
@@ -89,6 +102,10 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                         .putExtra(I.GoodsDetails.KEY_GOODS_ID,bean.getGoodsId()),0);
                     }
                 });
+                cbCartSelected.setOnCheckedChangeListener(cbkListener);
+                cbCartSelected.setTag(position);
+                ivCartAdd.setOnClickListener(addCart);
+                ivCartAdd.setTag(position);
             }
         }
     }

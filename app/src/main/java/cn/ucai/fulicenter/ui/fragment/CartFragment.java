@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,13 +24,14 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
-import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CartBean;
 import cn.ucai.fulicenter.data.bean.GoodsDetailsBean;
+import cn.ucai.fulicenter.data.bean.MessageBean;
 import cn.ucai.fulicenter.data.bean.User;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
+import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.activity.LoginActivity;
 import cn.ucai.fulicenter.ui.adapter.CartAdapter;
@@ -165,6 +167,8 @@ public class CartFragment extends Fragment {
     private void updataUI() {
         if (adapter == null) {
             adapter = new CartAdapter(getContext(), list);
+            adapter.setCbkListener(cbkListener);
+            adapter.setAddCart(clickListener);
             rvGoods.setAdapter(adapter);
         } else {
             adapter.notifyDataSetChanged();
@@ -209,19 +213,55 @@ public class CartFragment extends Fragment {
                         sumPrice += getPrice(goods.getCurrencyPrice()) * bean.getCount();
                         savePrice+=(getPrice(goods.getCurrencyPrice())-getPrice(goods.getRankPrice())) * bean.getCount();
                     }
-                }else {
-                    sumPrice = 0;
-                    savePrice = 0;
                 }
-                tvCartSumPrice.setText("合计：¥" + sumPrice);
-                tvCartSavePrice.setText("节省：¥"+savePrice);
-            }
 
+            }
+        } else{
+            sumPrice=0;
+            savePrice=0;
         }
+        tvCartSumPrice.setText("合计：￥"+sumPrice);
+        tvCartSavePrice.setText("节省：￥"+savePrice);
 
     }
     private  int getPrice(String currentPrice){
-        String price = currentPrice.substring(currentPrice.indexOf("¥") + 1);
+        String price = currentPrice.substring(currentPrice.indexOf("￥") + 1);
         return Integer.parseInt(price);
+    }
+    CompoundButton.OnCheckedChangeListener cbkListener=new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int position = (int) buttonView.getTag();
+            L.e(TAG,"OnCheckedChangeListener.position="+position+",isChecked="+isChecked);
+            CartBean bean = list.get(position);
+            bean.setChecked(isChecked);
+            sumPrice();
+        }
+    };
+    View.OnClickListener clickListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag();
+            updateCart(position,1);
+        }
+    };
+
+    private void updateCart(final int position, final int count) {
+        final CartBean bean = list.get(position);
+        model.updateCart(getContext(), bean.getId(), bean.getCount() + count, false, new OnCompleteListener<MessageBean>() {
+            @Override
+            public void onSuccess(MessageBean result) {
+                if(result!=null&&result.isSuccess()){
+                    list.get(position).setCount(bean.getCount() + count);
+                    adapter.notifyDataSetChanged();
+                    sumPrice();
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
     }
 }
