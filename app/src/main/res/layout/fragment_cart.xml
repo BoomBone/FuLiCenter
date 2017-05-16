@@ -3,4 +3,50 @@
     android:layout_height="match_parent"
     >
     <include layout="@layout/fragment_newgoods" />
+    <RelativeLayout
+        android:id="@+id/layout_cart"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        >
+        <TextView
+            android:id="@+id/tv_cart_sum_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:text="合计：¥0"
+            android:textColor="#f90"
+            android:textSize="18sp"
+            android:layout_toLeftOf="@+id/tv_cart_buy"
+            />
+        <TextView
+            android:id="@+id/tv_cart_save_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tv_cart_sum_price"
+            android:layout_marginRight="10dp"
+            android:text="节省：¥0"
+            android:textColor="@color/google_red"
+            android:textSize="18sp"
+            android:layout_toLeftOf="@+id/tv_cart_buy"
+            />
+      <TextView
+          android:id="@+id/tv_cart_buy"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          android:layout_alignParentRight="true"
+          android:paddingLeft="30dp"
+          android:paddingRight="30dp"
+          android:text="结算"
+          android:gravity="center"
+          android:textSize="18sp"
+          android:textColor="@color/white"
+          android:background="@color/orange"
+          />
+
+    </RelativeLayout>
 </RelativeLayout>

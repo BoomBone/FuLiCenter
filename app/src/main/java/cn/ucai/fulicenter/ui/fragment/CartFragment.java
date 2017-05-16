@@ -12,10 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,20 +23,15 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.application.FuLiCenterApplication;
-import cn.ucai.fulicenter.data.bean.BoutiqueBean;
+import cn.ucai.fulicenter.application.I;
 import cn.ucai.fulicenter.data.bean.CartBean;
+import cn.ucai.fulicenter.data.bean.GoodsDetailsBean;
 import cn.ucai.fulicenter.data.bean.User;
-import cn.ucai.fulicenter.data.net.GoodsModel;
-import cn.ucai.fulicenter.data.net.IGoodsModel;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
-import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
-import cn.ucai.fulicenter.ui.activity.GoodsDetailActivity;
 import cn.ucai.fulicenter.ui.activity.LoginActivity;
-import cn.ucai.fulicenter.ui.activity.MainActivity;
-import cn.ucai.fulicenter.ui.adapter.BoutiqueAdapter;
 import cn.ucai.fulicenter.ui.adapter.CartAdapter;
 import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
 
@@ -62,6 +57,16 @@ public class CartFragment extends Fragment {
     ArrayList<CartBean> list = new ArrayList<>();
 
     ProgressDialog pd;
+    @BindView(R.id.layout_new_good)
+    RelativeLayout layoutNewGood;
+    @BindView(R.id.tv_cart_sum_price)
+    TextView tvCartSumPrice;
+    @BindView(R.id.tv_cart_save_price)
+    TextView tvCartSavePrice;
+    @BindView(R.id.tv_cart_buy)
+    TextView tvCartBuy;
+    @BindView(R.id.layout_cart)
+    RelativeLayout layoutCart;
 
     @Nullable
     @Override
@@ -177,6 +182,7 @@ public class CartFragment extends Fragment {
         tvNomore.setText(isError ? R.string.reload_data : R.string.order_nothing);
         srf.setVisibility(visibility ? View.VISIBLE : View.GONE);
         tvNomore.setVisibility(visibility ? View.GONE : View.VISIBLE);
+        layoutCart.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.tv_nomore)
@@ -191,5 +197,31 @@ public class CartFragment extends Fragment {
         if (adapter != null) {
             unbinder.unbind();
         }
+    }
+    private  void sumPrice(){
+        int sumPrice = 0;
+        int savePrice = 0;
+        if(list.size()>0){
+            for (CartBean bean: list) {
+                if (bean.isChecked()) {
+                    GoodsDetailsBean goods = bean.getGoods();
+                    if(goods!=null){
+                        sumPrice += getPrice(goods.getCurrencyPrice()) * bean.getCount();
+                        savePrice+=(getPrice(goods.getCurrencyPrice())-getPrice(goods.getRankPrice())) * bean.getCount();
+                    }
+                }else {
+                    sumPrice = 0;
+                    savePrice = 0;
+                }
+                tvCartSumPrice.setText("合计：¥" + sumPrice);
+                tvCartSavePrice.setText("节省：¥"+savePrice);
+            }
+
+        }
+
+    }
+    private  int getPrice(String currentPrice){
+        String price = currentPrice.substring(currentPrice.indexOf("¥") + 1);
+        return Integer.parseInt(price);
     }
 }
