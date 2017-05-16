@@ -79,8 +79,14 @@ public class CartFragment extends Fragment {
         model = new UserModel();
         initDialog();
         initView();
-        loadData();
+
         setListener();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 
     private void setListener() {
@@ -116,23 +122,24 @@ public class CartFragment extends Fragment {
     }
 
     private void loadData() {
-        if(FuLiCenterApplication.getInstance().isLogined()){
+        if (FuLiCenterApplication.getInstance().isLogined()) {
             User user = FuLiCenterApplication.getInstance().getCurrentUser();
             model.loadCart(getContext(), user.getMuserName(), new OnCompleteListener<CartBean[]>() {
                 @Override
                 public void onSuccess(CartBean[] result) {
                     pd.dismiss();
                     setLayoutVisibily(false);
-                    setListVisibility(true);
+                    setListVisibility(true, false);
                     list.clear();
 
                     if (result != null) {
-                        list .addAll(ResultUtils.array2List(result)) ;
+                        list.addAll(ResultUtils.array2List(result));
                         updataUI();
-                    }else{
-                        if(adapter==null||adapter.getItemCount()==1){
-                            setListVisibility(false);
+                        if (list.size() == 0) {
+                            setListVisibility(false, false);
                         }
+                    } else {
+                        setListVisibility(false, false);
                     }
                 }
 
@@ -141,22 +148,20 @@ public class CartFragment extends Fragment {
                     pd.dismiss();
                     setLayoutVisibily(false);
                     list.clear();
-                    if(adapter==null||adapter.getItemCount()==1){
-                        setListVisibility(false);
-                    }
+                    setListVisibility(false, true);
                 }
             });
-        }else{
+        } else {
             startActivityForResult(new Intent(getActivity(), LoginActivity.class), 0);
         }
 
     }
 
     private void updataUI() {
-        if(adapter==null){
+        if (adapter == null) {
             adapter = new CartAdapter(getContext(), list);
             rvGoods.setAdapter(adapter);
-        }else{
+        } else {
             adapter.notifyDataSetChanged();
         }
     }
@@ -164,15 +169,18 @@ public class CartFragment extends Fragment {
     //刷新可见，不刷新看不到
     void setLayoutVisibily(boolean visibily) {
         srf.setRefreshing(visibily);
-        tvRefresh.setVisibility(visibily?View.VISIBLE:View.GONE);
+        tvRefresh.setVisibility(visibily ? View.VISIBLE : View.GONE);
     }
+
     //刷新页面能看见，加载页面就看不见
-    void setListVisibility(boolean visibility){
+    void setListVisibility(boolean visibility, boolean isError) {
+        tvNomore.setText(isError ? R.string.reload_data : R.string.order_nothing);
         srf.setVisibility(visibility ? View.VISIBLE : View.GONE);
-        tvNomore.setVisibility(visibility?View.GONE:View.VISIBLE);
+        tvNomore.setVisibility(visibility ? View.GONE : View.VISIBLE);
     }
+
     @OnClick(R.id.tv_nomore)
-    public void reload(){
+    public void reload() {
         pd.show();
         loadData();
     }
@@ -180,7 +188,7 @@ public class CartFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(adapter!=null){
+        if (adapter != null) {
             unbinder.unbind();
         }
     }
