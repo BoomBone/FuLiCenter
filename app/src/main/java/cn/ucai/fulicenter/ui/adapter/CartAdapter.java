@@ -93,6 +93,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         }
 
         public void bind(int position) {
+            cbCartSelected.setOnCheckedChangeListener(null);
             final CartBean bean = list.get(position);
             if(bean!=null){
                 GoodsDetailsBean goods = bean.getGoods();
