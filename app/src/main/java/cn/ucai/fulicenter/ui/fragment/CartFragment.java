@@ -148,6 +148,7 @@ public class CartFragment extends Fragment {
                     } else {
                         setListVisibility(false, false);
                     }
+                    sumPrice();
                 }
 
                 @Override
@@ -156,6 +157,7 @@ public class CartFragment extends Fragment {
                     setLayoutVisibily(false);
                     list.clear();
                     setListVisibility(false, true);
+                    sumPrice();
                 }
             });
         } else {
