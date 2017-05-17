@@ -72,6 +72,7 @@ public class GoodsDetailActivity extends AppCompatActivity {
     IGoodsModel model;
     IUserModel iUserModel;
     boolean isCollect = false;
+    GoodsDetailsBean mGoodsDetailsBean;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +101,9 @@ public class GoodsDetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess(GoodsDetailsBean result) {
                 L.e(TAG, "result=" + result);
+
                 if (result != null) {
+                    mGoodsDetailsBean = result;
                     showData(result);
                 }
             }
@@ -234,6 +237,8 @@ public class GoodsDetailActivity extends AppCompatActivity {
             public void onSuccess(MessageBean result) {
                 if(result!=null&&result.isSuccess()){
                     CommonUtils.showLongToast(R.string.add_goods_success);
+                    sendBroadcast(new Intent(I.BROADCAST_UPDATA_CART)
+                    .putExtra(I.Cart.class.toString(),mGoodsDetailsBean));
                 }else{
                     CommonUtils.showLongToast(R.string.add_goods_fail);
                 }
