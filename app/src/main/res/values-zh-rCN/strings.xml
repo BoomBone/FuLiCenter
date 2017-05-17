@@ -47,4 +47,5 @@
     <string name="skip">跳转</string>
     <string name="setting" >设置</string>
     <string name="reload_data" >重新加载数据</string>
+    <string name="order_title">收货地址</string>
 </resources>

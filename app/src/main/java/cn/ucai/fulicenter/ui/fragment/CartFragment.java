@@ -35,9 +35,11 @@ import cn.ucai.fulicenter.data.bean.User;
 import cn.ucai.fulicenter.data.net.IUserModel;
 import cn.ucai.fulicenter.data.net.OnCompleteListener;
 import cn.ucai.fulicenter.data.net.UserModel;
+import cn.ucai.fulicenter.data.utils.CommonUtils;
 import cn.ucai.fulicenter.data.utils.L;
 import cn.ucai.fulicenter.data.utils.ResultUtils;
 import cn.ucai.fulicenter.ui.activity.LoginActivity;
+import cn.ucai.fulicenter.ui.activity.OrderActivity;
 import cn.ucai.fulicenter.ui.adapter.CartAdapter;
 import cn.ucai.fulicenter.ui.view.SpaceItemDecoration;
 
@@ -73,6 +75,8 @@ public class CartFragment extends Fragment {
     TextView tvCartBuy;
     @BindView(R.id.layout_cart)
     RelativeLayout layoutCart;
+    int sumPrice;
+    int savePrice;
 
     @Nullable
     @Override
@@ -98,7 +102,7 @@ public class CartFragment extends Fragment {
     private void setListener() {
         //过滤和注册
         IntentFilter filter = new IntentFilter(I.BROADCAST_UPDATA_CART);
-        getContext().registerReceiver(mReceiver,filter);
+        getContext().registerReceiver(mReceiver, filter);
 
         srf.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -207,64 +211,67 @@ public class CartFragment extends Fragment {
             unbinder.unbind();
         }
     }
-    private  void sumPrice(){
-        int sumPrice = 0;
-        int savePrice = 0;
-        if(list.size()>0){
-            for (CartBean bean: list) {
+
+    private void sumPrice() {
+        sumPrice = 0;
+        savePrice = 0;
+        if (list.size() > 0) {
+            for (CartBean bean : list) {
                 if (bean.isChecked()) {
                     GoodsDetailsBean goods = bean.getGoods();
-                    if(goods!=null){
+                    if (goods != null) {
                         sumPrice += getPrice(goods.getCurrencyPrice()) * bean.getCount();
-                        savePrice+=(getPrice(goods.getCurrencyPrice())-getPrice(goods.getRankPrice())) * bean.getCount();
+                        savePrice += (getPrice(goods.getCurrencyPrice()) - getPrice(goods.getRankPrice())) * bean.getCount();
                     }
                 }
 
             }
-        } else{
-            sumPrice=0;
-            savePrice=0;
+        } else {
+            sumPrice = 0;
+            savePrice = 0;
         }
-        tvCartSumPrice.setText("合计：￥"+sumPrice);
-        tvCartSavePrice.setText("节省：￥"+savePrice);
+        tvCartSumPrice.setText("合计：￥" + sumPrice);
+        tvCartSavePrice.setText("节省：￥" + savePrice);
 
     }
-    private  int getPrice(String currentPrice){
+
+    private int getPrice(String currentPrice) {
         String price = currentPrice.substring(currentPrice.indexOf("￥") + 1);
         return Integer.parseInt(price);
     }
-    CompoundButton.OnCheckedChangeListener cbkListener=new CompoundButton.OnCheckedChangeListener() {
+
+    CompoundButton.OnCheckedChangeListener cbkListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             int position = (int) buttonView.getTag();
-            L.e(TAG,"OnCheckedChangeListener.position="+position+",isChecked="+isChecked);
+            L.e(TAG, "OnCheckedChangeListener.position=" + position + ",isChecked=" + isChecked);
             CartBean bean = list.get(position);
             bean.setChecked(isChecked);
             sumPrice();
         }
     };
-    View.OnClickListener clickListener=new View.OnClickListener() {
+    View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.iv_cart_add:
                     final int position = (int) v.getTag();
-                    updateCart(position,1);
+                    updateCart(position, 1);
                     break;
                 case R.id.iv_cart_del:
                     final int delPosition = (int) v.getTag();
-                    L.e(TAG,"View.OnClickListener.delPosition="+delPosition);
+                    L.e(TAG, "View.OnClickListener.delPosition=" + delPosition);
                     CartBean bean = list.get(delPosition);
-                    if(bean.getCount()>1){
-                        updateCart(delPosition,-1);
-                    }else if(bean.getCount()==1){
+                    if (bean.getCount() > 1) {
+                        updateCart(delPosition, -1);
+                    } else if (bean.getCount() == 1) {
                         model.removeCart(getContext(), bean.getId(), new OnCompleteListener<MessageBean>() {
                             @Override
                             public void onSuccess(MessageBean result) {
                                 list.remove(delPosition);
                                 adapter.notifyDataSetChanged();
                                 sumPrice();
-                                if(list.size()==0){
+                                if (list.size() == 0) {
                                     setListVisibility(false, false);
                                 }
                             }
@@ -286,7 +293,7 @@ public class CartFragment extends Fragment {
         model.updateCart(getContext(), bean.getId(), bean.getCount() + count, false, new OnCompleteListener<MessageBean>() {
             @Override
             public void onSuccess(MessageBean result) {
-                if(result!=null&&result.isSuccess()){
+                if (result != null && result.isSuccess()) {
                     list.get(position).setCount(bean.getCount() + count);
                     adapter.notifyDataSetChanged();
                     sumPrice();
@@ -301,6 +308,17 @@ public class CartFragment extends Fragment {
     }
 
     UpdateCartBroadcastReceiver mReceiver = new UpdateCartBroadcastReceiver();
+
+    @OnClick(R.id.tv_cart_buy)
+    public void onCartBuyClicked() {
+        if(sumPrice>0){
+            startActivity(new Intent(getContext(),OrderActivity.class)
+            .putExtra(I.Cart.PAY_PRICE,sumPrice-savePrice));
+        }else{
+            CommonUtils.showLongToast(R.string.order_nothing);
+        }
+    }
+
     class UpdateCartBroadcastReceiver extends BroadcastReceiver {
 
         @Override
@@ -313,9 +331,9 @@ public class CartFragment extends Fragment {
     private void updateCart(GoodsDetailsBean bean) {
         boolean isHas = false;
         //如果相同数据相加
-        if(bean!=null){
-            for (int i = 0; i <list.size() ; i++) {
-                if(list.get(i).getGoodsId()==bean.getGoodsId()){
+        if (bean != null) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getGoodsId() == bean.getGoodsId()) {
                     list.get(i).setCount(list.get(i).getCount() + 1);
                     adapter.notifyItemChanged(i);
                     sumPrice();
@@ -325,8 +343,8 @@ public class CartFragment extends Fragment {
             }
         }
 
-        L.e(TAG,"updateCart.isHas="+isHas);
-        if(!isHas){
+        L.e(TAG, "updateCart.isHas=" + isHas);
+        if (!isHas) {
             CartBean cart = new CartBean();
             cart.setCount(1);
             cart.setGoodsId(bean.getGoodsId());
@@ -342,7 +360,7 @@ public class CartFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mReceiver!=null){
+        if (mReceiver != null) {
             getContext().unregisterReceiver(mReceiver);
         }
     }
