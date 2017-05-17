@@ -259,7 +259,7 @@ public class CartFragment extends Fragment {
                             @Override
                             public void onSuccess(MessageBean result) {
                                 list.remove(delPosition);
-                                adapter.notifyItemRemoved(delPosition);
+                                adapter.notifyDataSetChanged();
                                 sumPrice();
                                 if(list.size()==0){
                                     setListVisibility(false, false);
@@ -285,7 +285,7 @@ public class CartFragment extends Fragment {
             public void onSuccess(MessageBean result) {
                 if(result!=null&&result.isSuccess()){
                     list.get(position).setCount(bean.getCount() + count);
-                    adapter.notifyItemRemoved(position);
+                    adapter.notifyDataSetChanged();
                     sumPrice();
                 }
             }
