@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.application;
 
 import android.app.Application;
 
+import cn.sharesdk.framework.ShareSDK;
 import cn.ucai.fulicenter.data.bean.User;
 
 /**
@@ -34,6 +35,7 @@ public class FuLiCenterApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        ShareSDK.initSDK(this);
     }
     public static FuLiCenterApplication getInstance(){
         return instance;
