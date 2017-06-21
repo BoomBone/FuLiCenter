@@ -1,4 +1,6 @@
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="pingpp_title_activity_pay">支付</string>
     <string name="pingpp_title_activity_pay_successed">支付成功</string>
     <string name="pingpp_title_activity_pay_filed">支付失败</string>

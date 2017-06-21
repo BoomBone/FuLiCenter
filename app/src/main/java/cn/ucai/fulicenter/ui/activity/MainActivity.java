@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     PersonalFragment mPersonalFragment;
     Fragment[] mFragments;
     RadioButton[] mRadioButton;
-    int currentIndex, index;
+    int currentIndex;
+    int index = 0;
     @BindView(R.id.layout_new_good)
     RadioButton mLayoutNewGood;
     @BindView(R.id.layout_boutique)
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         initFragment();
         initRadioButton();
         showFragment();
+        mLayoutNewGood.setChecked(true);
     }
 
     private void initRadioButton() {

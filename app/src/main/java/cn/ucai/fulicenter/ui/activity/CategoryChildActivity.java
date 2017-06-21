@@ -2,6 +2,7 @@ package cn.ucai.fulicenter.ui.activity;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,7 @@ public class CategoryChildActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category_child);
         unbinder = ButterKnife.bind(this);
         int catId = getIntent().getIntExtra(I.CategoryChild.CAT_ID, I.CAT_ID);
-        fragment = new NewGoodsFragment(catId);
+        fragment = NewGoodsFragment.newInstance(catId);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, fragment)
                 .commit();
@@ -63,13 +64,13 @@ public class CategoryChildActivity extends AppCompatActivity {
                 priceAsc = !priceAsc;
                 sortBy = priceAsc ? I.SORT_BY_PRICE_ASC : I.SORT_BY_PRICE_DESC;
 
-                end = getDrawable(priceAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
+                end = ContextCompat.getDrawable(this,priceAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
                 btnSortPrice.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, end, null);
                 break;
             case R.id.btn_sort_addtime:
                 addTimeAsc = !addTimeAsc;
                 sortBy = addTimeAsc ? I.SORT_BY_ADDTIME_ASC : I.SORT_BY_ADDTIME_DESC;
-                end = getDrawable(addTimeAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
+                end = ContextCompat.getDrawable(this,addTimeAsc ? R.drawable.arrow_order_up : R.drawable.arrow_order_down);
                 btnSortAddtime.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, end, null);
                 break;
             case R.id.backClickArea:

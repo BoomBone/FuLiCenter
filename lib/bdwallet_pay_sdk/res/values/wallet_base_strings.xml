@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <!-- 公共部分  -->
     <string name="ebpay_bd_wallet">我的钱包</string>
     <string name="ebpay_bd_my_wallet">我的钱包</string>

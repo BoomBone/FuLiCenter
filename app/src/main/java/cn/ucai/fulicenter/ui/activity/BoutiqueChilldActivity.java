@@ -44,7 +44,7 @@ public class BoutiqueChilldActivity extends AppCompatActivity {
         L.e("main","cat_id"+catId);
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_container, new NewGoodsFragment(catId));
+        ft.add(R.id.fragment_container, NewGoodsFragment.newInstance(catId));
         ft.commit();
     }
     @OnClick(R.id.backClickArea)

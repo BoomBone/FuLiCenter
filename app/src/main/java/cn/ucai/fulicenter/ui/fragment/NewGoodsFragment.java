@@ -62,10 +62,18 @@ public class NewGoodsFragment extends Fragment {
 
     }
 
-    public NewGoodsFragment(int catId) {
-        this.catId = catId;
-    }
+//    public NewGoodsFragment(int catId) {
+//        this.catId = catId;
+//    }
     //LinearLayoutManager lm;
+    public static  NewGoodsFragment newInstance(int catId){
+        NewGoodsFragment fragmentOne = new NewGoodsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("catId", catId);
+        //fragment保存参数，传入一个Bundle对象
+        fragmentOne.setArguments(bundle);
+        return fragmentOne;
+    }
 
 
 
@@ -75,6 +83,9 @@ public class NewGoodsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_newgoods, null);
         unbinder = ButterKnife.bind(this, view);
+        if(getArguments()!=null){
+            catId = getArguments().getInt("catId");
+        }
         return view;
     }
 
